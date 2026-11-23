@@ -1,4 +1,4 @@
-const CACHE = 'nce1-e26b2872';
+const CACHE = 'nce1-287f26f5';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/icon-180.png', './讲义.pdf'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE)

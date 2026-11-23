@@ -106,8 +106,24 @@ body{
 .pieLeg .nm{flex:1;white-space:nowrap}
 .pieLeg .tm{color:var(--ink2);font-variant-numeric:tabular-nums}
 .pieLeg .pc{width:42px;text-align:right;color:var(--blue);font-weight:600;font-variant-numeric:tabular-nums}
-.hwItem{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+.hwItem{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line);cursor:pointer;position:relative}
 .hwItem:last-child{border-bottom:none}
+.hwItem.run{background:rgba(27,74,134,.045)}
+.hwItem.run .hwText{color:var(--ink)}
+.hwOps{display:flex;align-items:center;gap:6px;margin-left:auto;flex:0 0 auto;padding-left:8px;padding-top:1px}
+.tsec{font-size:11.5px;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap;min-width:38px;text-align:right}
+.hwItem.run .tsec{color:var(--blue);font-weight:700}
+.tiny{border:1px solid var(--line);background:#ffffff;border-radius:9px;padding:4px 9px;font:inherit;font-size:11.5px;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.tiny:active{transform:translateY(1px)}
+.tiny.pri{background:var(--blue);border-color:var(--blue);color:#ffffff;font-weight:600}
+.tiny.warm{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+.hwText{flex:1;min-width:0}
+.runLabel{font-size:12.5px;color:var(--ink2);margin-bottom:2px;min-height:18px}
+.runLabel b{color:var(--blue)}
+.syncCard{background:linear-gradient(180deg,#ffffff,#eaf2fb);border-color:rgba(27,74,134,.22)}
+.syncTop{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.syncTop b{font-size:15px;letter-spacing:.02em}
+.syncTop .st{font-size:11.5px;color:var(--ink2);margin-top:2px}
 .box{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(15,36,64,.28);flex:0 0 auto;margin-top:2px;display:grid;place-items:center;color:transparent;font-size:12px}
 .hwItem.on .box{background:var(--blue);border-color:var(--blue);color:#fff}
 .hwItem.on .hwText{color:var(--ink2);text-decoration:line-through;text-decoration-color:rgba(15,36,64,.25)}
@@ -202,7 +218,7 @@ function dayKey(d){ d = d || new Date(); const p = n => String(n).padStart(2,"0"
   return d.getFullYear() + "-" + p(d.getMonth()+1) + "-" + p(d.getDate()); }
 function thisYearEnd(){ return new Date().getFullYear() + "-12-31"; }
 function defaultState(){
-  const s = {done:{}, marks:{}, secs:{}, days:{}, seg:{}, tasks:{}, make:{}, lastN:41, lastCat:"video", goal:thisYearEnd(), start:40, updatedAt:""};
+  const s = {done:{}, marks:{}, secs:{}, days:{}, seg:{}, itemSec:{}, tasks:{}, make:{}, lastN:41, lastCat:"video", goal:thisYearEnd(), start:40, updatedAt:""};
   for (let i = 1; i <= 40; i++) s.done[i] = 1;   // 用户当前进度：已完成 1–40 课
   return s;
 }
@@ -245,8 +261,8 @@ function goalInfo(){
   return { done, remaining, daysLeft, perWeek, perDay, wDone, wStill: Math.max(0, perWeek - wDone) };
 }
 
-/* ---------- 计时器 ---------- */
-let T = { n:null, on:false, base:0, startAt:0, committed:0, cat:"video" };
+/* ---------- 计时器：按任务计时 ---------- */
+let T = { n:null, item:null, cat:"video", on:false, startAt:0, base:0, committed:0 };
 let tickHandle = null;
 function elapsed(){ return T.base + (T.on ? (Date.now() - T.startAt)/1000 : 0); }
 function addSeg(n, cat, delta){
@@ -254,27 +270,75 @@ function addSeg(n, cat, delta){
   S.seg = S.seg || {}; S.seg[n] = S.seg[n] || {};
   S.seg[n][cat] = (S.seg[n][cat]||0) + delta;
 }
+/* 单条作业累计秒 */
+function itemSecOf(n, id){
+  const o = (S.itemSec && S.itemSec[n]) || {};
+  return o[id] || 0;
+}
+function baseOf(n, item){ return item ? itemSecOf(n, item) : (S.secs[n] || 0); }
+/* 只把新增的这段算进去：总时长、环节、当天、单条作业 */
 function commitTimer(){
   if (!T.n) return;
   const e = Math.round(elapsed());
-  const before = Math.round(T.committed);
-  S.secs[T.n] = e;
-  const d = dayKey();
-  const delta = Math.max(0, e - before);
-  if (delta) addSeg(T.n, T.cat || "video", delta);
-  S.days[d] = (S.days[d]||0) + delta;
+  const delta = Math.max(0, e - T.committed);
+  if (!delta) return;
+  S.secs[T.n] = (S.secs[T.n] || 0) + delta;
+  addSeg(T.n, T.cat || "video", delta);
+  const d = dayKey(); S.days[d] = (S.days[d]||0) + delta;
+  if (T.item){
+    S.itemSec = S.itemSec || {}; S.itemSec[T.n] = S.itemSec[T.n] || {};
+    S.itemSec[T.n][T.item] = (S.itemSec[T.n][T.item] || 0) + delta;
+  }
   T.committed = e;
-  T.base = e; T.startAt = Date.now();
-  if (T.on) S.run = {n: T.n, cat: T.cat || "video", start: T.startAt};
+  if (T.on) S.run = {n: T.n, item: T.item, cat: T.cat, start: T.startAt};
   save();
 }
-function startTimer(n){
-  if (T.on) pauseTimer();
-  T.n = n; T.base = S.secs[n]||0; T.on = true; T.startAt = Date.now(); T.committed = T.base;
-  T.cat = S.lastCat || "video";
-  S.run = {n: T.n, cat: T.cat, start: T.startAt};
+function startTimer(n, item, cat){
+  if (T.on) commitTimer();
+  T.n = n; T.item = item || null; T.cat = cat || S.lastCat || "video";
+  T.base = baseOf(n, T.item); T.startAt = Date.now(); T.committed = T.base;
+  S.secs[n] = S.secs[n] || 0;
+  T.on = true; S.lastCat = T.cat;
+  S.run = {n: T.n, item: T.item, cat: T.cat, start: T.startAt};
   if (!tickHandle) tickHandle = setInterval(onTick, 1000);
-  onTick(); renderTimer(); save();
+  save(); render();
+}
+function taskCat(k){ return k === "read" ? "read" : (k === "make" ? "make" : "hw"); }
+function taskTitle(n, id){
+  const t = (LESSONS[n-1].hw || [])[+String(id).slice(1)] || {};
+  return t.t || "这条作业";
+}
+/* 点一条作业：同一条在跑就暂停；换一条就先把上一条存盘再开新的 */
+function startItem(n, id){
+  if (T.on && T.n === n && T.item === id){ pauseTimer(); return; }
+  const t = (LESSONS[n-1].hw || [])[+String(id).slice(1)] || {};
+  startTimer(n, id, taskCat(t.k));
+  toast("开始计时：" + String(t.t || "这条作业").slice(0, 18));
+}
+function resumeItem(n, id){
+  const t = (LESSONS[n-1].hw || [])[+String(id).slice(1)] || {};
+  startTimer(n, id, taskCat(t.k));
+}
+function pauseTimer(silent){
+  if (!T.on) return;
+  commitTimer(); T.on = false; delete S.run; save();
+  if (!silent) render();
+}
+/* 结束 = 这条任务做完了：存时间 + 勾选作业 */
+function finishRun(){
+  if (!T.n) return;
+  const n = T.n, item = T.item;
+  commitTimer();
+  T.on = false; delete S.run;
+  if (item){
+    S.tasks[n] = S.tasks[n] || {};
+    if (!S.tasks[n][item]) S.tasks[n][item] = dayKey();
+    toast("已完成：这条作业（" + fmtLong(itemSecOf(n, item)) + "）");
+  } else {
+    toast("计时结束，本课累计 " + fmtLong(S.secs[n] || 0));
+  }
+  T.n = null; T.item = null; T.committed = 0; T.base = 0;
+  save(); render();
 }
 /* 切换「当前在做哪一步」，前面已经跑的时间记到原环节，不丢 */
 function setCat(c){
@@ -284,24 +348,27 @@ function setCat(c){
   if (T.on && S.run) S.run.cat = c;
   save(); render();
 }
-function pauseTimer(silent){
-  if (!T.on) return;
-  commitTimer(); T.on = false;
-  delete S.run;
-  if (!silent){ renderTimer(); }
-  save();
+function toggleTimer(n){ if (T.on && T.n === n && !T.item) pauseTimer(); else startTimer(n, null, "video"); }
+function nowLabel(n){
+  if (!T.n) return "还没开始计时 —— 点下面任意一条作业就开始";
+  const head = (T.n === n ? "" : "第 " + T.n + " 课 · ");
+  if (T.item) return head + "作业：<b>" + esc(String(taskTitle(T.n, T.item)).slice(0, 24)) + "</b>";
+  return head + "<b>跟课视频</b>";
 }
-function toggleTimer(n){ if (T.on && T.n === n) pauseTimer(); else startTimer(n); }
 function onTick(){
   if (!T.on) return;
   const tv = $("timer"); if (tv) tv.textContent = fmt(elapsed());
   const mt = $("metaTime"); if (mt) mt.innerHTML = metaTimeHTML(T.n);
   const sg = $("segline"); if (sg && T.n) sg.innerHTML = segLine(T.n);
-  const st = $("btnTimer"); if (st) st.textContent = "暂停计时";
+  const lbl = $("runLabel"); if (lbl) lbl.innerHTML = nowLabel(T.n);
+  const st = $("btnTimer"); if (st) st.textContent = "暂停";
+  if (T.item){ const el = $("ts-" + T.n + "-" + T.item); if (el) el.textContent = fmt(elapsed()); }
   if (Date.now() - T.startAt > 10000) commitTimer();
 }
 function metaTimeHTML(n){
-  return "本课累计 <b>" + fmtLong(S.secs[n]||0) + "</b> · 今日 <b>" + fmtLong(S.days[dayKey()]||0) + "</b>";
+  let s = "本课累计 <b>" + fmtLong(S.secs[n]||0) + "</b> · 今日 <b>" + fmtLong(S.days[dayKey()]||0) + "</b>";
+  if (T.n === n && T.item) s += " · 本条已记 <b>" + fmtLong(itemSecOf(n, T.item)) + "</b>";
+  return s;
 }
 /* 环节拆分：本课 / 全站 */
 function segOf(n){
@@ -375,11 +442,10 @@ document.addEventListener("visibilitychange", ()=>{
   if (document.hidden){ commitTimer(); return; }   // 存盘，继续跑
   const gap = Date.now() - T.startAt;
   if (gap > RUN_GAP_MAX){
-    T.base = S.secs[T.n] || 0; T.startAt = Date.now(); T.committed = T.base;
-    if (S.run) delete S.run;
+    T.on = false; delete S.run; T.n = null; T.item = null;
     save(); toast("离开超过 12 小时，已按最后记录截止");
   }
-  renderTimer();
+  render();
 });
 function restoreRun(){
   const r = S.run;
@@ -388,8 +454,8 @@ function restoreRun(){
   if (!(n >= 1 && n <= TOTAL) || !r.start) { delete S.run; return; }
   const gap = Date.now() - r.start;
   if (gap > RUN_GAP_MAX || gap < 0){ delete S.run; save(); return; }
-  T.n = n; T.cat = CATS.some(c => c.k === r.cat) ? r.cat : "video";
-  T.base = S.secs[n] || 0; T.startAt = r.start; T.committed = T.base; T.on = true;
+  T.n = n; T.item = r.item || null; T.cat = CATS.some(c => c.k === r.cat) ? r.cat : "video";
+  T.base = baseOf(n, T.item); T.startAt = r.start; T.committed = T.base; T.on = true;
   if (!tickHandle) tickHandle = setInterval(onTick, 1000);
   toast("继续上次的计时：第 " + n + " 课");
 }
@@ -398,18 +464,18 @@ function restoreRun(){
 let filter = "all";
 
 function renderTimer(){
-  if (T.on && !document.getElementById("timer")) return;
   const v = location.hash || "#/home";
   const m = v.match(/^#\/lesson\/(\d+)/);
-  if (m){ const n = +m[1];
-    if (T.on && T.n !== n) startTimer(n); // 保持同一课计时
-    const tv = $("timer"); if (tv) tv.textContent = fmt(elapsed());
-    const mt = $("metaTime"); if (mt) mt.innerHTML = metaTimeHTML(n);
-    const btn = $("btnTimer"); if (btn) btn.textContent = (T.on && T.n === n) ? "暂停计时" : "开始计时";
-  }
+  if (!m) return;
+  const n = +m[1];
+  const tv = $("timer"); if (!tv) return;
+  tv.textContent = fmt(T.on && T.n === n ? elapsed() : (T.n === n && T.item ? itemSecOf(n, T.item) : (S.secs[n] || 0)));
+  const mt = $("metaTime"); if (mt) mt.innerHTML = metaTimeHTML(n);
+  const btn = $("btnTimer"); if (btn) btn.textContent = (T.on && T.n === n) ? "暂停" : "开始听课计时";
+  const lbl = $("runLabel"); if (lbl) lbl.innerHTML = nowLabel(n);
 }
 
-function go(h){ if (T.on) pauseTimer(true); location.hash = h; }
+function go(h){ if (T.on) commitTimer(); location.hash = h; }
 function render(){
   const h = location.hash || "#/home";
   const m = h.match(/^#\/lesson\/(\d+)/);
@@ -470,6 +536,22 @@ function viewHome(){
     </div>
   </section>
 
+  <section class="card syncCard">
+    <div class="syncTop">
+      <div>
+        <b>☁ 云端同步</b>
+        <div class="st" id="syncStatus">${esc(gistStatus())}</div>
+      </div>
+      <button class="btn" onclick="gistSync('auto')">⇅ 一键同步</button>
+    </div>
+    <div class="row" style="gap:8px;margin-top:10px">
+      <button class="btn ghost sm" onclick="gistSync('pull')">只拉取 云端→本机</button>
+      <button class="btn ghost sm" onclick="gistSync('push')">只上传 本机→云端</button>
+      <button class="btn ghost sm" onclick="openSettings()">同步设置</button>
+    </div>
+    <div class="note-box" style="margin-top:8px">手机、电脑各点一次就一样了。规则：比最后一次修改时间，<b>新的一方覆盖旧的一方</b>（拉取前会先在本机留一份备份）。</div>
+  </section>
+
   <div class="row">
     <button class="btn orange" style="flex:1" onclick="go('#/lesson/${n}')">接着学 · 第 ${n} 课</button>
     <button class="btn ghost" onclick="go('#/stats')">学习记录</button>
@@ -485,12 +567,12 @@ function viewHome(){
   <div class="card" style="padding:14px"><div class="grid">${cells}</div></div>
 
   <div class="secTitle"><h2>设置</h2><span class="hint">本机存储 · 可选 Gist 同步</span></div>
-  <div class="card">
+  <div class="card" id="setCard">
     <label class="set">年度目标日<input type="date" value="${esc(S.goal)}" onchange="setGoal(this.value)"></label>
     <label class="set">我的进度（已完成课数）
       <span class="row" style="gap:8px;align-items:center">
         <input type="number" min="0" max="144" style="width:78px" value="${doneCount()}" id="progInput">
-        <button class="btn sm" onclick="setProgress()">同步</button>
+        <button class="btn sm" onclick="setProgress()">保存</button>
       </span>
     </label>
     <div class="note-box" style="margin-top:10px">
@@ -519,7 +601,8 @@ function viewHome(){
       <button class="btn ghost sm" onclick="gistCreate()">新建 Gist</button>
     </div>
     <div class="note-box" style="margin-top:8px">
-      Token 只保存在这台设备，不会写进导出的 JSON。云端是 secret gist，别人看不到。同步规则：比较修改时间，新的一方覆盖旧的一方；拉取覆盖前会先在本机留一份备份。
+      Token 只保存在这台设备，不会写进导出的 JSON。云端是 secret gist，别人看不到。同步规则：比较修改时间，新的一方覆盖旧的一方；拉取覆盖前会先在本机留一份备份。<br>
+      首页顶部也有同一个「⇅ 一键同步」按钮，日常用那个就行。
     </div>
 
     <div style="margin-top:14px"><button class="btn ghost sm" onclick="resetAll()">清空所有记录</button></div>
@@ -549,11 +632,23 @@ function viewLesson(n){
   const taskHTML = tasks.map(t => {
     const on = S.tasks[n] && S.tasks[n][t.id];
     const desc = t.k==='make' ? (t.cnt ? "目标 "+t.cnt+" 句" : "句数不限") : kindDesc[t.k];
-    return `<div class="hwItem ${on?'on':''}" data-tid="${n}-${t.id}" onclick="toggleTask(${n},'${t.id}')">
-      <span class="box">✓</span>
+    const sec = itemSecOf(n, t.id);
+    const running = T.on && T.n === n && T.item === t.id;
+    const paused = !T.on && T.n === n && T.item === t.id;
+    const ops = running
+      ? `<button class="tiny" onclick="event.stopPropagation();pauseTimer()">暂停</button>
+         <button class="tiny pri" onclick="event.stopPropagation();finishRun()">结束</button>`
+      : (paused
+      ? `<button class="tiny warm" onclick="event.stopPropagation();resumeItem(${n},'${t.id}')">继续</button>
+         <button class="tiny pri" onclick="event.stopPropagation();finishRun()">结束</button>`
+      : `<button class="tiny" onclick="event.stopPropagation();startItem(${n},'${t.id}')">开始</button>`);
+    return `<div class="hwItem ${on?'on':''} ${running?'run':''}" data-tid="${n}-${t.id}" onclick="startItem(${n},'${t.id}')">
+      <span class="box" onclick="event.stopPropagation();toggleTask(${n},'${t.id}')">✓</span>
       <div class="hwText">${esc(t.t)}<em>${esc(desc||"")}</em>
       ${t.link?`<a class="linkline" href="${t.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">nce.ichochy.com 朗读页 ↗</a>`:""}
-      </div></div>`;
+      </div>
+      <div class="hwOps"><span class="tsec" id="ts-${n}-${t.id}">${sec ? fmt(sec) : "—"}</span>${ops}</div>
+    </div>`;
   }).join("");
   const makeHTML = tasks.filter(t => t.k === 'make').map(t => {
     const key = n + "_" + t.id;
@@ -567,6 +662,9 @@ function viewLesson(n){
       <button class="btn ghost sm" onclick="clearMake(${n},'${t.id}')">清空</button></div>
     </div>`;
   }).join("");
+  const timerVal = (T.n === n && T.on) ? fmt(elapsed())
+    : (T.n === n && T.item ? fmt(itemSecOf(n, T.item)) : fmt(S.secs[n] || 0));
+  const runningHere = T.on && T.n === n;
   return `
   <div class="lessonHead">
     <button class="back" onclick="go('#/home')">← 课程表</button>
@@ -585,16 +683,17 @@ function viewLesson(n){
   </section>
 
   <section class="card timerCard">
-    <div class="tl">本课学习计时</div>
-    <div id="timer">${fmt(T.on && T.n===n ? elapsed() : (S.secs[n]||0))}</div>
+    <div class="tl">当前计时</div>
+    <div class="runLabel" id="runLabel">${nowLabel(n)}</div>
+    <div id="timer">${timerVal}</div>
     <div class="tmeta" id="metaTime">${metaTimeHTML(n)}</div>
     <div class="tbtns">
-      <button class="btn" id="btnTimer" onclick="toggleTimer(${n})">${T.on && T.n===n ? "暂停计时" : "开始计时"}</button>
-      <button class="btn ghost" onclick="resetTimer(${n})">清零</button>
+      ${T.on
+        ? `<button class="btn" id="btnTimer" onclick="pauseTimer()">暂停</button>
+           <button class="btn ghost" onclick="finishRun()">结束</button>`
+        : `<button class="btn" id="btnTimer" onclick="toggleTimer(${n})">开始听课计时</button>
+           <button class="btn ghost" onclick="resetTimer(${n})">清零</button>`}
     </div>
-    <div class="cats">${CATS.filter(c=>c.k!=="none").map(c=>`<div class="cat ${T.cat===c.k?"on":""}" onclick="setCat('${c.k}')"><i style="background:${c.c}"></i>${c.t}</div>`).join("")}</div>
-    <div class="catHint">先点一下你现在在做哪一步，时间分别记到对应环节；切换或暂停都不会丢。</div>
-    ${segLine(n) ? `<div class="segline" id="segline">${segLine(n)}</div>` : ""}
   </section>
 
   <section class="card">
@@ -644,6 +743,19 @@ function viewStats(){
   const top = LESSONS.filter(l => S.secs[l.n]).sort((a,b)=>S.secs[b.n]-S.secs[a.n]).slice(0,5);
   if (top.length) list = top.map(l => `<div class="w"><b>第 ${l.n} 课</b><span class="ipa"></span><span class="note">${fmtLong(S.secs[l.n])}</span></div>`).join("");
   const studyDays = Object.keys(S.days || {}).filter(k => (S.days[k]||0) > 0).length;
+  /* 每条作业/任务用时排行 */
+  const items = [];
+  for (const n in (S.itemSec || {})){
+    const L = LESSONS[+n - 1]; if (!L) continue;
+    for (const id in S.itemSec[n]){
+      const sec = S.itemSec[n][id] || 0; if (sec < 30) continue;
+      const t = (L.hw || [])[+String(id).slice(1)] || {};
+      items.push({n: +n, t: t.t || "任务", sec: sec});
+    }
+  }
+  items.sort((a, b) => b.sec - a.sec);
+  const itemList = items.slice(0, 8).map(x => `<div class="w"><b>第 ${x.n} 课</b><span class="ipa">${esc(String(x.t).slice(0, 22))}</span><span class="note">${fmtLong(x.sec)}</span></div>`).join("");
+  const itemSum = items.reduce((a, x) => a + x.sec, 0);
   return `
   <div class="lessonHead">
     <button class="back" onclick="go('#/home')">← 课程表</button>
@@ -669,6 +781,11 @@ function viewStats(){
   <section class="card">
     <div class="secTitle" style="margin:0 0 2px"><h2>花时间最多的课</h2><span class="hint">Top 5</span></div>
     ${list || '<div class="empty">还没有计时记录，去课程页点「开始计时」。</div>'}
+  </section>
+  <section class="card">
+    <div class="secTitle" style="margin:0 0 2px"><h2>每条作业花了多少时间</h2><span class="hint">按任务计时 · Top 8</span></div>
+    ${itemList || '<div class="empty">还没按任务计时。到课程页点任意一条作业，就会开始给它记时；「结束」后这里能看到每条用了多久。</div>'}
+    ${items.length ? `<div class="note-box" style="margin-top:8px">共记录 ${items.length} 条任务，合计 <b>${fmtLong(itemSum)}</b>；同一条作业分几次做，时间会自动累加。</div>` : ""}
   </section>`;
 }
 
@@ -722,11 +839,17 @@ function markDone(n){
   save(); render();
 }
 function resetTimer(n){
-  if (!confirm("清零第 " + n + " 课的计时记录？累计时长和环节分布会一并扣除。")) return;
-  if (T.on && T.n === n) pauseTimer(true);
+  if (!confirm("清零第 " + n + " 课的计时记录？累计时长、环节分布、单条作业用时都会一并扣除。")) return;
+  if (T.on && T.n === n){ T.on = false; delete S.run; T.n = null; T.item = null; }
   S.secs[n] = 0;
   if (S.seg) delete S.seg[n];
+  if (S.itemSec) delete S.itemSec[n];
   save(); render();
+}
+function openSettings(){
+  const el = document.getElementById("setCard");
+  if (el) el.scrollIntoView({behavior:"smooth", block:"start"});
+  else toast("先回首页");
 }
 function setGoal(v){ if (!v) return; S.goal = v; save(); render(); toast("目标日已更新"); }
 function setProgress(){
@@ -760,9 +883,17 @@ function normalizeState(o){
       for (const k in o.seg[n]){ const v = +o.seg[n][k]; if (v > 0) seg[n][k] = v; }
     }
   }
+  const itemSec = {};
+  if (o.itemSec && typeof o.itemSec === "object"){
+    for (const n in o.itemSec){
+      if (typeof o.itemSec[n] !== "object") continue;
+      itemSec[n] = {};
+      for (const id in o.itemSec[n]){ const v = +o.itemSec[n][id]; if (v > 0) itemSec[n][id] = v; }
+    }
+  }
   return Object.assign(defaultState(), {
     done: o.done || {}, marks: o.marks || {}, secs: o.secs || {}, days: o.days || {},
-    seg: seg, lastCat: CATS.some(c => c.k === o.lastCat) ? o.lastCat : "video",
+    seg: seg, itemSec: itemSec, lastCat: CATS.some(c => c.k === o.lastCat) ? o.lastCat : "video",
     tasks: o.tasks || {}, make: o.make || {}, lastN: o.lastN || 41,
     goal: o.goal || thisYearEnd(), start: (typeof o.start === "number" ? o.start : 0),
     updatedAt: o.updatedAt || ""
