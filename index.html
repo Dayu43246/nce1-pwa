@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>新概念英语一 · 打卡</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1b4a86">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="新一打卡">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/icon-180.png">
+<link rel="icon" href="./icons/icon-192.png">
+<style>
+:root{
+  --paper:#eef4fc; --paper2:#e2ecf9; --ink:#0f2440; --ink2:#57697f;
+  --line:rgba(15,36,64,.12); --blue:#1b4a86; --blue2:#2f74b5;
+  --accent:#1f68b0; --accent2:#8ab8e6; --green:#3f7d5c; --card:#ffffff;
+  --shadow:0 10px 30px -18px rgba(15,36,64,.45);
+  --r:18px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  background:
+    radial-gradient(1200px 600px at 10% -10%, #ffffff 0%, rgba(255,255,255,0) 60%),
+    radial-gradient(900px 500px at 100% 0%, #dce9fa 0%, rgba(220,233,250,0) 55%),
+    var(--paper);
+  color:var(--ink); font-size:15px; line-height:1.55;
+  min-height:100vh;
+}
+.wrap{max-width:860px;margin:0 auto;padding:18px 18px 56px}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:6px 0 16px}
+.brand{font-size:12px;letter-spacing:.22em;color:var(--ink2);text-transform:uppercase}
+.title{font-family:Georgia,"Songti SC","Noto Serif SC",serif;font-size:26px;font-weight:700;line-height:1.2;margin-top:2px}
+.title small{font-family:inherit;font-size:13px;color:var(--ink2);font-weight:400;letter-spacing:.04em}
+.yearchip{font-size:12px;color:var(--blue);background:rgba(27,74,134,.08);border:1px solid rgba(27,74,134,.16);padding:6px 10px;border-radius:999px;white-space:nowrap}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;margin-bottom:14px}
+.hero{display:flex;gap:18px;align-items:center;padding:18px}
+.ring{width:118px;height:118px;flex:0 0 auto;position:relative}
+.ring svg{width:100%;height:100%}
+.ring .pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .pct b{font-size:22px;line-height:1}
+.ring .pct span{font-size:11px;color:var(--ink2);letter-spacing:.1em}
+.heroText{flex:1;min-width:0}
+.kpi{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
+.kpi div{min-width:92px}
+.kpi b{display:block;font-size:23px;font-family:Georgia,serif;line-height:1.1}
+.kpi span{font-size:12px;color:var(--ink2)}
+.heroText p{margin:6px 0 0;color:var(--ink2);font-size:13px}
+.heroText p b{color:var(--accent);font-size:15px}
+.btn{appearance:none;border:none;cursor:pointer;font:inherit;border-radius:14px;padding:12px 16px;background:var(--blue);color:#ffffff;font-weight:600;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.orange{background:var(--accent)}
+.btn.sm{padding:8px 12px;font-size:13px;border-radius:11px}
+.btn.wide{width:100%}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.spacer{flex:1}
+.secTitle{display:flex;align-items:baseline;justify-content:space-between;margin:20px 2px 10px}
+.secTitle h2{font-size:14px;letter-spacing:.16em;margin:0;color:var(--ink2);font-weight:700;text-transform:uppercase}
+.secTitle .hint{font-size:12px;color:var(--ink2)}
+.progress{height:9px;background:rgba(15,36,64,.08);border-radius:999px;overflow:hidden;margin-top:10px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--blue2),var(--blue));border-radius:999px;transition:width .35s}
+.progress.warm i{background:linear-gradient(90deg,var(--accent2),var(--accent))}
+.filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:transparent;color:var(--ink2);border-radius:999px;padding:6px 12px;font-size:12.5px;cursor:pointer}
+.chip.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:8px}
+.cell{position:relative;aspect-ratio:1/1;border-radius:12px;border:1px solid var(--line);background:#ffffff;color:var(--ink2);font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer;font-variant-numeric:tabular-nums}
+.cell.done{background:rgba(27,74,134,.1);border-color:rgba(27,74,134,.25);color:var(--blue)}
+.cell.done::after{content:"";position:absolute;right:5px;top:5px;width:5px;height:5px;border-radius:50%;background:var(--green)}
+.cell.cur{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 2px rgba(31,104,176,.16) inset}
+.cell.has{background:linear-gradient(180deg,#ffffff,#e9f1fb)}
+.cell.timed::before{content:"";position:absolute;left:5px;bottom:5px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
+.lessonHead{display:flex;align-items:center;gap:12px;margin:2px 0 14px}
+.back{background:transparent;border:1px solid var(--line);border-radius:10px;padding:7px 11px;font:inherit;font-size:13px;color:var(--ink2);cursor:pointer}
+.lessonHead .ln{font-family:Georgia,serif;font-size:19px;font-weight:700}
+.lessonHead .ls{font-size:12.5px;color:var(--ink2)}
+.pill{font-size:11.5px;padding:4px 9px;border-radius:999px;border:1px solid var(--line);color:var(--ink2)}
+.pill.ok{color:var(--green);border-color:rgba(63,125,92,.3);background:rgba(63,125,92,.07)}
+.parts{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.part{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#f7fafe}
+.part:hover{border-color:rgba(27,74,134,.35)}
+.part .pi{width:24px;height:24px;border-radius:8px;background:var(--blue);color:#fff;display:grid;place-items:center;font-size:11px;flex:0 0 auto}
+.part b{font-size:14px;font-weight:600}
+.part .pd{margin-left:auto;font-size:12px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.timerCard{text-align:center;background:linear-gradient(180deg,#ffffff,#eef4fc)}
+.timerCard .tl{font-size:11px;letter-spacing:.22em;color:var(--ink2)}
+#timer{font-family:Georgia,serif;font-size:44px;letter-spacing:.02em;line-height:1.15;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.tmeta{font-size:12.5px;color:var(--ink2)}
+.tbtns{display:flex;gap:10px;justify-content:center;margin:12px 0 4px}
+.cats{display:flex;gap:7px;flex-wrap:wrap;justify-content:center;margin:10px 0 2px}
+.cat{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font-size:12.5px;color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;user-select:none}
+.cat i{width:8px;height:8px;border-radius:50%;display:block}
+.cat.on{border-color:var(--blue);color:var(--blue);font-weight:600;box-shadow:0 2px 8px rgba(27,74,134,.13)}
+.catHint{font-size:11.5px;color:var(--ink2);margin-top:6px}
+.segline{font-size:12px;color:var(--ink2);margin-top:8px;line-height:1.7}
+.segline b{color:var(--ink);font-weight:600}
+.pieWrap{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.pieLeg{flex:1;min-width:210px}
+.pieLeg .row{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px;border-bottom:1px solid rgba(15,36,64,.06)}
+.pieLeg .row:last-child{border-bottom:none}
+.pieLeg .dot{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+.pieLeg .nm{flex:1;white-space:nowrap}
+.pieLeg .tm{color:var(--ink2);font-variant-numeric:tabular-nums}
+.pieLeg .pc{width:42px;text-align:right;color:var(--blue);font-weight:600;font-variant-numeric:tabular-nums}
+.hwItem{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+.hwItem:last-child{border-bottom:none}
+.box{width:20px;height:20px;border-radius:6px;border:1.5px solid rgba(15,36,64,.28);flex:0 0 auto;margin-top:2px;display:grid;place-items:center;color:transparent;font-size:12px}
+.hwItem.on .box{background:var(--blue);border-color:var(--blue);color:#fff}
+.hwItem.on .hwText{color:var(--ink2);text-decoration:line-through;text-decoration-color:rgba(15,36,64,.25)}
+.hwText{font-size:14px}
+.hwText em{display:block;font-style:normal;font-size:12px;color:var(--ink2);margin-top:2px}
+.mk{padding:12px 0;border-top:1px dashed var(--line)}
+.mk:first-of-type{border-top:none;padding-top:2px}
+.mkTop{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.mkTop b{font-size:14.5px}
+.mkNum{font-size:12.5px;color:var(--blue);font-weight:600;font-variant-numeric:tabular-nums}
+.mkHint{font-size:11.5px;color:var(--ink2);margin:2px 0 8px}
+.mk textarea{width:100%;min-height:132px;resize:vertical;border:1px solid var(--line);border-radius:12px;
+  padding:11px 12px;font:inherit;font-size:13.5px;line-height:1.7;background:#fbfdff;color:var(--ink)}
+.mk textarea:focus{outline:2px solid rgba(27,74,134,.18);border-color:rgba(27,74,134,.4)}
+.mkFoot{display:flex;align-items:center;justify-content:space-between;margin-top:8px;gap:8px}
+.mkTip{font-size:11.5px;color:var(--ink2)}
+.mkTip.ok{color:var(--green);font-weight:600}
+.linkline{display:inline-flex;align-items:center;gap:6px;color:var(--blue);font-size:12.5px;text-decoration:none;border-bottom:1px solid rgba(27,74,134,.25);padding-bottom:1px;margin-top:5px}
+.wlist{margin-top:6px}
+.w{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(15,36,64,.07)}
+.w:last-child{border-bottom:none}
+.w b{font-size:15px;font-weight:600;min-width:96px}
+.w .ipa{font-family:"Segoe UI","Arial Unicode MS","Lucida Sans Unicode","DejaVu Sans","Noto Sans",sans-serif;color:var(--blue2);font-size:12.5px}
+.w .note{margin-left:auto;font-size:12px;color:var(--ink2);text-align:right;max-width:46%}
+.ex{padding:9px 0;border-bottom:1px solid rgba(15,36,64,.07);font-size:14px;color:var(--ink)}
+.ex:last-child{border-bottom:none}
+.ex i{font-style:normal;color:var(--ink2);font-size:12px;margin-right:8px;font-variant-numeric:tabular-nums}
+.empty{font-size:13px;color:var(--ink2);padding:6px 0}
+.ref{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.ref p{margin:0;font-size:12.5px;color:var(--ink2)}
+.footnav{display:flex;gap:10px;margin-top:6px}
+.bar{display:flex;align-items:flex-end;gap:6px;height:96px;margin-top:8px}
+.bar div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px;height:100%}
+.bar i{width:100%;background:linear-gradient(180deg,var(--blue2),var(--blue));border-radius:6px 6px 3px 3px;min-height:3px;display:block}
+.bar span{font-size:10.5px;color:var(--ink2)}
+.bar em{font-size:10px;color:var(--ink2);font-style:normal}
+.statsRow{display:flex;gap:16px;flex-wrap:wrap}
+.statsRow div{min-width:110px}
+.statsRow b{display:block;font-family:Georgia,serif;font-size:21px}
+.statsRow span{font-size:12px;color:var(--ink2)}
+label.set{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;font-size:13.5px;border-bottom:1px solid rgba(15,36,64,.07)}
+label.set:last-of-type{border-bottom:none}
+input[type=date],input[type=number]{font:inherit;font-size:13px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#ffffff;color:var(--ink)}
+input[type=text],input[type=password]{font:inherit;font-size:12.5px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#ffffff;color:var(--ink);min-width:190px;max-width:62%;flex:0 1 auto}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-size:13px;padding:10px 16px;border-radius:999px;opacity:0;transition:.25s;pointer-events:none;z-index:10}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.note-box{font-size:12px;color:var(--ink2);line-height:1.7}
+.goalstrip{font-size:12.5px;color:var(--ink2);background:rgba(27,74,134,.055);border:1px solid rgba(27,74,134,.12);border-radius:12px;padding:9px 12px;margin:-4px 0 14px}
+.goalstrip b{color:var(--accent);font-size:14px}
+@media (max-width:560px){
+  .hero{flex-direction:column;align-items:flex-start}
+  .ring{width:100px;height:100px}
+  #timer{font-size:38px}
+  .cats{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .cat{justify-content:center}
+  .title{font-size:21px}
+  .title small{display:block;margin-top:4px;letter-spacing:.02em}
+  .kpi{width:100%;gap:12px}
+  .kpi div{min-width:0;flex:1}
+  .goalstrip{font-size:12px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px}
+  .part{padding:10px}
+  .mk textarea{min-height:120px}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast"></div>
+<script>
+const DATA = {"lessons":[{"n":1,"page":8,"parts":[{"p":3,"t":"001 单词","d":"21:13"},{"p":4,"t":"001 语法 文章","d":"14:10"}],"hw":[{"k":"wb","t":"绿皮书 第一课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"关闭视频后请回忆刚刚讲解的知识点,看能回忆出多少?基于 Study-Test 理论"},{"k":"explain","t":"请给自己讲解一遍今天的核心语法+知识点。参考 Learning Pyramid"}],"words":[{"w":"excuse me","ipa":"/ɪkˈskjuːz//miː/","note":"打扰一下(引起注意)"},{"w":"handbag","ipa":"/ˈhændbæɡ/","note":""},{"w":"pardon","ipa":"/ˈpɑːdn/","note":""},{"w":"pen","ipa":"/pen/","note":""},{"w":"pencil","ipa":"/ˈpensəl/","note":""},{"w":"book","ipa":"/bʊk/","note":""},{"w":"watch","ipa":"/wɒtʃ/","note":"哔哩哔哩 胶囊助学计划"}],"examples":["This is my...?","Is this your...?","This is my handbag.","Is this my handbag?","Is this your handbag?","This is my..."]},{"n":2,"page":9,"parts":[{"p":5,"t":"002 单词 练习","d":"14:04"}],"hw":[{"k":"wb","t":"绿皮书 第2课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"尝试回忆 并给自己讲解一遍今天的核心知识点"}],"words":[{"w":"dress skirt","ipa":"/dres//skɜːt/","note":"清辅音–浊辅音"},{"w":"coat","ipa":"/kəʊt/","note":""},{"w":"shirt","ipa":"/ʃɜːt/","note":""},{"w":"T-shirt","ipa":"","note":""},{"w":"car","ipa":"/kɑː/","note":""},{"w":"house","ipa":"/haʊs/","note":""}],"examples":["This is my...?","Is this your...?"]},{"n":3,"page":10,"parts":[{"p":6,"t":"003 单词","d":"13:25"},{"p":7,"t":"003 语法 文章","d":"11:46"}],"hw":[{"k":"wb","t":"绿皮书 第3课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"尝试回忆并给自己讲解一遍今天的核心 知识点"},{"k":"explain","t":"请给自己讲解一遍今天的 核心知识点"},{"k":"extra","t":"查明英文的0-9如何表达,尝试把自己的电话号码用 英文表达流畅"}],"words":[{"w":"umbrella","ipa":"/ʌmˈbrelə/","note":""},{"w":"please","ipa":"/pliːz/","note":"please please please 拜托了"},{"w":"number","ipa":"/ˈnʌmbə/","note":""},{"w":"five","ipa":"/faɪv/","note":""},{"w":"here","ipa":"/hɪə/","note":""},{"w":"come here","ipa":"","note":""},{"w":"my","ipa":"/maɪ/","note":""},{"w":"ticket","ipa":"/ˈtɪkɪt/","note":""},{"w":"one way ticket","ipa":"","note":""},{"w":"sorry","ipa":"/ˈsɒri/","note":""},{"w":"sir  madam","ipa":"/sɜː//ˈmædəm/","note":""},{"w":"cloakroom","ipa":"/ˈkləʊkrʊm/","note":"这是我的雨伞。"}],"examples":["This is my umbrella.","Is this your umbrella?","Leo is here.","Is Leo here?","I am so sorry.","This is my cloakroom."]},{"n":4,"page":11,"parts":[{"p":8,"t":"004 单词 练习","d":"10:33"}],"hw":[{"k":"wb","t":"绿皮书 第4课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的 核心知识点"}],"words":[{"w":"pen","ipa":"","note":""},{"w":"pencil","ipa":"","note":""},{"w":"book","ipa":"","note":""},{"w":"watch","ipa":"","note":""},{"w":"coat","ipa":"","note":""},{"w":"dress","ipa":"","note":""},{"w":"skirt","ipa":"","note":""},{"w":"shirt","ipa":"","note":""},{"w":"car","ipa":"","note":""},{"w":"house","ipa":"","note":""},{"w":"suit","ipa":"/suːt/","note":""},{"w":"nice suit","ipa":"","note":""},{"w":"it suits me","ipa":"","note":"recap: 清辅音——浊辅音"},{"w":"school","ipa":"/skuːl/","note":"recap: 清辅音——浊辅音"},{"w":"teacher","ipa":"/ˈtiːtʃə/","note":"一般疑问句+ 否定句"},{"w":"son daughter","ipa":"/sʌn//ˈdɔːtə/","note":"一般疑问句 + 否定句"}],"examples":["Is this my pen or your pen?","This is not my pen.","This is your pen.","Is this my pencil or your pencil?","This is not my pencil.","This is your pencil."]},{"n":5,"page":13,"parts":[{"p":9,"t":"005 单词","d":"23:53"},{"p":10,"t":"005 语法 文章","d":"16:53"}],"hw":[{"k":"wb","t":"绿皮书 第五课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍本期课 程的核心知识点"},{"k":"explain","t":"请给自己讲解一遍今天的核心语法+知识点。参考 Learning Pyramid"},{"k":"explain","t":"请给自己讲解一遍今天的核心语法+知识点"}],"words":[{"w":"David Joseph Beckham","ipa":"","note":""},{"w":"Joseph-middle name","ipa":"","note":""},{"w":"Nice to meet you","ipa":"","note":""},{"w":"good morning","ipa":"/ɡʊd//ˈmɔːnɪŋ/","note":""},{"w":"Morning","ipa":"","note":""},{"w":"French","ipa":"/frentʃ/","note":"一般疑问句 + 否定句"},{"w":"German","ipa":"","note":"一般疑问句 + 否定句"},{"w":"fusion food","ipa":"","note":""},{"w":"too","ipa":"/tuː/","note":"哔哩哔哩 胶囊助学计划"},{"w":"a  an","ipa":"","note":"一个"},{"w":"a pen","ipa":"","note":""},{"w":"an apple","ipa":"","note":"文章跟读至熟读成诵"},{"w":"an umbrella an egg","ipa":"","note":"文章跟读至熟读成诵"},{"w":"an hour","ipa":"","note":"文章跟读至熟读成诵"},{"w":"a university","ipa":"","note":"文章跟读至熟读成诵"},{"w":"German American","ipa":"","note":""}],"examples":["This is Barack Obama.","Is he German?","No, he isn't German.","He is American.","This is James Bond.","Is he French?"]},{"n":6,"page":17,"parts":[{"p":11,"t":"006 单词 练习","d":"10:43"}],"hw":[{"k":"wb","t":"绿皮书 第6课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"Japanese Chinese","ipa":"","note":""},{"w":"Korean Chinese","ipa":"","note":""},{"w":"Swedish Italian","ipa":"","note":""}],"examples":["This is Jacky Chan.","Is he Japanese?","No, he isn't Japanese.","He is Chinese.","This is Bruce Lee.","Is he Korean?"]},{"n":7,"page":18,"parts":[{"p":12,"t":"007 单词","d":"12:25"},{"p":13,"t":"007 语法 文章","d":"19:55"}],"hw":[{"k":"wb","t":"绿皮书 第7课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"尝试回忆并请给自己讲解 一遍今天的核心知识点"},{"k":"explain","t":"回忆课程并请给自己讲解 一遍今天的核心知识点"},{"k":"make","t":"单词试着造句","word":"本课单词","n":null}],"words":[{"w":"You are","ipa":"/ɑː/","note":""},{"w":"job","ipa":"/dʒɒb/","note":""},{"w":"keyboard","ipa":"/ˈkiːbɔːd/","note":"单词试着造句"},{"w":"nationality","ipa":"/næʃəˈnæləti/","note":""},{"w":"operator","ipa":"/ˈɒpəreɪtə/","note":""},{"w":"engineer","ipa":"/endʒɪˈnɪə/","note":"特殊疑问句 ="}],"examples":["I am ...","I am Leo.","I am Chinese.","You are batman.","Are you Japanese?","What's your job?"]},{"n":8,"page":20,"parts":[{"p":14,"t":"008 单词 练习","d":"09:30"}],"hw":[{"k":"wb","t":"绿皮书 第8课的写作练习"},{"k":"read","t":"跟着视频一起做跟读练习"},{"k":"explain","t":"给自己讲解一遍今天的核心知识点（建议）"}],"words":[{"w":"he his she her","ipa":"","note":""},{"w":"policeman","ipa":"/pəˈliːsmən/","note":""},{"w":"postman","ipa":"/ˈpəʊstmən/","note":""},{"w":"milkman","ipa":"/ˈmɪlkmən/","note":""},{"w":"taxi driver","ipa":"/ˈtæksi//ˈdraɪvə/","note":""},{"w":"policewoman","ipa":"/pəˈliːswʊmən/","note":""},{"w":"nurse","ipa":"/nɜːs/","note":""},{"w":"housewife","ipa":"/ˈhaʊswaɪf/","note":""},{"w":"mechanic","ipa":"/mɪˈkænɪk/","note":""},{"w":"hairdresser","ipa":"/ˈheədresə/","note":""}],"examples":["What's _ job?","Is _ a policeman or a taxi driver?","He isn't a taxi driver.","He's a policeman.","Is _ a postman or a milkman?","He isn't a milkman."]},{"n":9,"page":21,"parts":[{"p":15,"t":"009 单词 语法 文章","d":"17:00"}],"hw":[{"k":"wb","t":"绿皮书 第9课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"hello  hi","ipa":"/heˈləʊ//haɪ/","note":""},{"w":"how","ipa":"/haʊ/","note":""},{"w":"well","ipa":"/wel/","note":""},{"w":"very well","ipa":"","note":""},{"w":"thanks","ipa":"/θæŋks/","note":""},{"w":"fine","ipa":"/faɪn/","note":""},{"w":"today","ipa":"/təˈdeɪ/","note":""},{"w":"goodbye","ipa":"/ɡʊdˈbaɪ/","note":"How 特殊疑问句"},{"w":"see you later","ipa":"","note":"How 特殊疑问句"},{"w":"How","ipa":"","note":""},{"w":"fat","ipa":"/fæt/","note":""},{"w":"thin","ipa":"/θɪn/","note":""},{"w":"tall","ipa":"/tɔːl/","note":""},{"w":"short","ipa":"/ʃɔːt/","note":""},{"w":"dirty","ipa":"/ˈdɜː.ti/","note":""},{"w":"clean","ipa":"/kliːn/","note":""}],"examples":["How are you?","I am fine.","How are you doing, today?","She is ok.","Is she ok?","How is she?"]},{"n":10,"page":23,"parts":[{"p":16,"t":"010 单词 练习","d":"11:26"}],"hw":[{"k":"wb","t":"绿皮书 第10课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"tall","ipa":"/tɔːl/","note":""},{"w":"short","ipa":"/ʃɔːt/","note":""},{"w":"dirty","ipa":"/ˈdɜː.ti/","note":""},{"w":"clean","ipa":"/kliːn/","note":""},{"w":"hot","ipa":"/hɒt/","note":""},{"w":"cold","ipa":"/kəʊld/","note":""},{"w":"old","ipa":"/əʊld/","note":""},{"w":"young","ipa":"/jʌŋ/","note":""},{"w":"busy","ipa":"/ˈbɪzi/","note":""},{"w":"lazy","ipa":"/ˈleɪzi/","note":""}],"examples":["Is that policeman tall or short?","He's not short. He's tall.","Is that policewoman short or tall?","She's not tall. She's short.","Is that mechanic dirty or clean?","He's not clean. He's dirty."]},{"n":11,"page":24,"parts":[{"p":17,"t":"011 单词 语法 文章","d":"20:17"}],"hw":[{"k":"wb","t":"绿皮书 第11课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"perhaps","ipa":"/pəˈhæps/","note":""},{"w":"catch","ipa":"/kætʃ/","note":"特殊疑问词"},{"w":"whose","ipa":"/huːz/","note":"特殊疑问词"},{"w":"white","ipa":"/waɪt/","note":"Whose 引导的特殊疑问句"},{"w":"Whose","ipa":"","note":""},{"w":"watch","ipa":"","note":""},{"w":"keyboard","ipa":"","note":""},{"w":"ticket","ipa":"","note":""},{"w":"father mother","ipa":"/ˈfɑː.ðə//ˈmʌðə/","note":""},{"w":"sister brother","ipa":"/ˈsɪstə//ˈbrʌðə/","note":""},{"w":"blouse","ipa":"/blaʊz/","note":""},{"w":"tie","ipa":"/taɪ/","note":""}],"examples":["Is that your car?"]},{"n":12,"page":28,"parts":[{"p":18,"t":"012 单词 练习","d":"16:23"}],"hw":[{"k":"wb","t":"绿皮书 第12课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"extra","t":"利用 tie 写一段对话"}],"words":[{"w":"handbag","ipa":"","note":""},{"w":"car","ipa":"","note":""},{"w":"coat","ipa":"","note":""},{"w":"umbrella","ipa":"","note":""},{"w":"pen","ipa":"","note":""},{"w":"dress","ipa":"","note":""},{"w":"suit","ipa":"","note":""},{"w":"skirt","ipa":"","note":""},{"w":"blouse","ipa":"","note":""},{"w":"tie","ipa":"","note":""}],"examples":["Whose is that handbag?","Is it Sophie's?","It isn't Sophie's. It's Stella's.","Whose is that car?","Is it Steven's?","It isn't Steven's. It's Paul's."]},{"n":13,"page":29,"parts":[{"p":19,"t":"013 语法 单词","d":"16:30"},{"p":20,"t":"013 文章","d":"10:23"}],"hw":[{"k":"wb","t":"绿皮书 第13课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"Hat 尝试造句 10句","word":"hat","n":10}],"words":[{"w":"colour color","ipa":"/ˈkʌlə/","note":""},{"w":"green","ipa":"","note":""},{"w":"hat","ipa":"/hæt/","note":"肯/否/一般/特殊"},{"w":"clean dirty hat","ipa":"","note":"肯/否/一般/特殊"},{"w":"same","ipa":"/seɪm/","note":""},{"w":"come here","ipa":"/kʌm/","note":""},{"w":"upstairs","ipa":"/ʌpˈsteəz/","note":""},{"w":"downstairs","ipa":"/daʊnˈsteəz/","note":""},{"w":"clever","ipa":"","note":""},{"w":"different","ipa":"/ˈdɪfərənt/","note":""},{"w":"lovely","ipa":"/ˈlʌvli/","note":""},{"w":"so cute","ipa":"","note":""},{"w":"This cat is so cute","ipa":"","note":"What colour 特殊疑问句"},{"w":"black umbrella","ipa":"","note":"Hat 尝试造句 10句"},{"w":"blue blouse","ipa":"","note":""},{"w":"white keyboard","ipa":"","note":""}],"examples":["His new umbrella is black.","Is his new umbrella black?","What colour is his new umbrella?","Her new blouse is blue.","Is her new blouse blue?","What colour is her new blouse?"]},{"n":14,"page":32,"parts":[{"p":21,"t":"014 单词 练习","d":"09:16"}],"hw":[{"k":"wb","t":"绿皮书 第14课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"coat","ipa":"","note":""},{"w":"tie","ipa":"","note":""},{"w":"umbrella","ipa":"","note":""},{"w":"car","ipa":"","note":""},{"w":"blouse","ipa":"","note":""},{"w":"shirt","ipa":"","note":""},{"w":"hat","ipa":"","note":""},{"w":"case","ipa":"","note":""},{"w":"dog","ipa":"","note":""},{"w":"carpet","ipa":"","note":""}],"examples":["What colour's Sophie's coat?","Is it white?","It isn't white. It's grey.","What colour's Leo's tie?","Is it yellow?","It isn't yellow. It's orange."]},{"n":15,"page":33,"parts":[{"p":22,"t":"015 语法 单词","d":"23:20"},{"p":23,"t":"015 文章","d":"08:36"}],"hw":[{"k":"wb","t":"绿皮书 第15课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"customs","ipa":"/ˈkʌstəmz/","note":""},{"w":"Goods to declare","ipa":"","note":""},{"w":"Nothing to declare","ipa":"","note":""},{"w":"officer office","ipa":"/ˈɒfɪsə/","note":""},{"w":"Norway","ipa":"/ˈnɔ:wei/","note":""},{"w":"passport","ipa":"/ˈpɑːspɔːt/","note":""},{"w":"girl  boy","ipa":"","note":""},{"w":"Denmark","ipa":"/ˈdenmɑ:k/","note":""},{"w":"brown","ipa":"/braʊn/","note":""},{"w":"tourist","ipa":"/ˈtʊərɪst/","note":""},{"w":"friend","ipa":"/frend/","note":""},{"w":"pen","ipa":"","note":""},{"w":"pens","ipa":"","note":""},{"w":"book","ipa":"","note":""},{"w":"books","ipa":"","note":""},{"w":"passports","ipa":"","note":"哔哩哔哩 胶囊助学计划"}],"examples":["What's her job?","She is a customs officer.","Ibsen is from Norway.","Is Ibsen from Norway?","Where is Ibsen from?","L3: Here is my passport."]},{"n":16,"page":37,"parts":[{"p":24,"t":"016 单词 练习","d":"13:51"}],"hw":[{"k":"wb","t":"绿皮书 第16课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"black  white","ipa":"/blæk//waɪt/","note":""},{"w":"these this","ipa":"/ðiːz/","note":""},{"w":"orange","ipa":"/ˈɒrɪndʒ/","note":""},{"w":"those that","ipa":"/ðəʊz/","note":""}],"examples":["What colour are your books?","Our books are black.","What colour are your shirts?","Our shirts are white.","What colour are your coats?","Our coats are grey."]},{"n":17,"page":38,"parts":[{"p":25,"t":"017 语法 单词","d":"18:12"},{"p":26,"t":"017 语法 文章","d":"14:08"}],"hw":[{"k":"wb","t":"绿皮书 第17课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的 核心知识点"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"试着用本课单词造句","word":"本课单词","n":null}],"words":[{"w":"employee","ipa":"/ɪmplɔɪˈiː/","note":""},{"w":"hardworking","ipa":"/hɑːdˈwɜːkɪŋ/","note":""},{"w":"office officer","ipa":"/ˈɒfɪs/","note":""},{"w":"assistant","ipa":"/əˈsɪstənt/","note":""},{"w":"sales rep","ipa":"/seɪlz//rep/","note":""},{"w":"man  woman  men  women","ipa":"/mæn//ˈwʊmən//men//ˈwɪmɪn/","note":"名词复数:以 f/fe 结尾的"},{"w":"Men are from Mars","ipa":"","note":"名词复数:以 f/fe 结尾的"},{"w":"Women are from Venus","ipa":"","note":"名词复数:以 f/fe 结尾的"},{"w":"housewife-housewives","ipa":"","note":"试着用本课单词造句"},{"w":"knife-knives","ipa":"","note":"试着用本课单词造句"},{"w":"thief-thieves","ipa":"","note":"试着用本课单词造句"},{"w":"country - countries","ipa":"","note":"名词复数:元音字母+y结尾的"},{"w":"family - families","ipa":"","note":"名词复数:元音字母+y结尾的"},{"w":"city - cities","ipa":"","note":"名词复数:元音字母+y结尾的"},{"w":"party - parties baby - babies","ipa":"","note":"名词复数:元音字母+y结尾的"},{"w":"day - days","ipa":"","note":"Who 特殊疑问句"}],"examples":["This is Iron Man.","Is this Iron Man?","Who is this?","This is Captain America.","Is this Captain America?","He is Hulk."]},{"n":18,"page":43,"parts":[{"p":27,"t":"018 单词 练习","d":"05:32"}],"hw":[{"k":"wb","t":"绿皮书 第18课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"teachers","ipa":"","note":""},{"w":"housewives","ipa":"","note":""},{"w":"hairdressers","ipa":"","note":""},{"w":"keyboard operators","ipa":"","note":""}],"examples":["What are their jobs?","Are they engineers?","They aren't engineers.","They're teachers.","Are they policewomen?","They aren't policewomen."]},{"n":19,"page":44,"parts":[{"p":28,"t":"019 单词 语法 文章","d":"15:07"}],"hw":[{"k":"wb","t":"绿皮书 第19课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"关闭视频后请回忆刚刚讲解的知识点,看能回忆出多少?基于 Study-Test 理论"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"matter","ipa":"/ˈmætə/","note":""},{"w":"children child","ipa":"/ˈtʃɪldrən//tʃaild/","note":""},{"w":"mum","ipa":"/mʌm/","note":"/t/ 失去爆破"},{"w":"sit down","ipa":"/sɪt//daʊn/","note":"/t/ 失去爆破"},{"w":"what","ipa":"","note":""},{"w":"tired","ipa":"/taɪəd/","note":""},{"w":"thirsty","ipa":"/ˈθɜːsti/","note":""},{"w":"right","ipa":"/raɪt/","note":""},{"w":"ice cream","ipa":"/aɪs//kriːm/","note":""}],"examples":["What's the matter?","These are my children.","Are these your children?","Whose children are these?","I am tired.","She is very thirsty."]},{"n":20,"page":47,"parts":[{"p":29,"t":"020 单词 练习","d":"12:03"}],"hw":[{"k":"wb","t":"绿皮书 第20课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"big  small","ipa":"/bɪɡ//smɔːl/","note":""},{"w":"open","ipa":"/ˈəʊpən/","note":""},{"w":"shoe","ipa":"/ʃuː/","note":""},{"w":"grandfather","ipa":"/ˈɡrænfɑːðə/","note":""},{"w":"shut","ipa":"/ʃʌt/","note":""},{"w":"light heavy","ipa":"/laɪt//ˈhevi/","note":""},{"w":"long  short","ipa":"/lɒŋ/","note":""},{"w":"grandmother","ipa":"/ˈɡrænmʌðə/","note":""},{"w":"shoes","ipa":"","note":""},{"w":"postmen","ipa":"","note":""},{"w":"hairdressers","ipa":"","note":""},{"w":"shops","ipa":"","note":""},{"w":"boxes","ipa":"","note":""},{"w":"grandmother grandfather","ipa":"","note":""},{"w":"hats","ipa":"","note":""},{"w":"policemen","ipa":"","note":""}],"examples":["Look at that boy's shoes.","Are they dirty?","They're not dirty.","They're clean.","Look at those postmen.","Are they hot?"]},{"n":21,"page":49,"parts":[{"p":30,"t":"021 单词 语法 文章","d":"13:58"}],"hw":[{"k":"wb","t":"绿皮书 第21课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"give","ipa":"/ɡɪv/","note":""},{"w":"one","ipa":"/wʌn/","note":""},{"w":"which","ipa":"/wɪtʃ/","note":""},{"w":"money","ipa":"","note":"文章跟读至熟读成诵"},{"w":"ticket","ipa":"","note":"文章跟读至熟读成诵"},{"w":"I me my","ipa":"","note":""},{"w":"you you your","ipa":"","note":""},{"w":"he him his","ipa":"","note":""},{"w":"she her her","ipa":"","note":""},{"w":"it it its","ipa":"","note":""},{"w":"umbrella","ipa":"","note":""},{"w":"passport","ipa":"","note":""}],"examples":[]},{"n":22,"page":51,"parts":[{"p":31,"t":"022 单词 练习","d":"09:59"}],"hw":[{"k":"wb","t":"绿皮书 第22课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"empty","ipa":"/ˈempti/","note":""},{"w":"full","ipa":"/fʊl/","note":""},{"w":"large medium","ipa":"/lɑːdʒ//ˈmiːdiəm/","note":""},{"w":"little","ipa":"/ˈlɪtl/","note":""},{"w":"sharp knife","ipa":"/ʃɑːp//naɪf/","note":""},{"w":"blunt","ipa":"/blʌnt/","note":""},{"w":"small big","ipa":"/smɔːl//bɪɡ/","note":""},{"w":"box","ipa":"/bɒks/","note":""},{"w":"glass","ipa":"/ɡlɑːs/","note":""},{"w":"cup","ipa":"/kʌp/","note":""},{"w":"bottle","ipa":"/ˈbɒtl/","note":""},{"w":"tin","ipa":"/tɪn/","note":""},{"w":"knife","ipa":"/naɪf/","note":""},{"w":"fork","ipa":"/fɔːk/","note":""},{"w":"spoon","ipa":"/spuːn/","note":""}],"examples":["This case is full.","This is a little girl.","This is a sharp knife.","This is a blunt knife.","Is that a dog? It's so small.","Is that a dog? It's so big."]},{"n":23,"page":52,"parts":[{"p":32,"t":"023 024 单词 语法 文章","d":"19:13"}],"hw":[{"k":"wb","t":"绿皮书 23/24 课写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"看图造句*10","word":"看图","n":10}],"words":[{"w":"cupboard","ipa":"/ˈkʌbəd/","note":""},{"w":"cigarette","ipa":"/ˈsɪɡəret/","note":""},{"w":"magazine","ipa":"/mæɡəˈziːn/","note":""},{"w":"bed","ipa":"/bed/","note":""},{"w":"television TV","ipa":"/ˈtelɪvɪʒən/","note":""},{"w":"floor  carpet  cup","ipa":"/flɔː/","note":""},{"w":"dressing table","ipa":"/ˈdresɪŋ/","note":""},{"w":"newspaper","ipa":"/ˈnjuːspeɪpə/","note":""},{"w":"stereo","ipa":"/ˈsteriəʊ/","note":""},{"w":"on shelf","ipa":"/ɒn//ʃelf/","note":""},{"w":"on the shelf","ipa":"","note":""},{"w":"desk","ipa":"/desk/","note":""},{"w":"table","ipa":"/teɪbl/","note":""},{"w":"plate","ipa":"/pleɪt/","note":""},{"w":"you - you","ipa":"","note":"文章跟读至熟读成诵"},{"w":"we - us","ipa":"","note":"文章跟读至熟读成诵"}],"examples":["The cup is on the cupboard.","Is the cup on the cupboard?","Where is the cup?","Give me a cup, please.","The one on the cupboard.","The cigarettes are on the plate."]},{"n":24,"page":52,"parts":[{"p":32,"t":"023 024 单词 语法 文章","d":"19:13"}],"hw":[{"k":"wb","t":"绿皮书 23/24 课写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"看图造句*10","word":"看图","n":10}],"words":[{"w":"cupboard","ipa":"/ˈkʌbəd/","note":""},{"w":"cigarette","ipa":"/ˈsɪɡəret/","note":""},{"w":"magazine","ipa":"/mæɡəˈziːn/","note":""},{"w":"bed","ipa":"/bed/","note":""},{"w":"television TV","ipa":"/ˈtelɪvɪʒən/","note":""},{"w":"floor  carpet  cup","ipa":"/flɔː/","note":""},{"w":"dressing table","ipa":"/ˈdresɪŋ/","note":""},{"w":"newspaper","ipa":"/ˈnjuːspeɪpə/","note":""},{"w":"stereo","ipa":"/ˈsteriəʊ/","note":""},{"w":"on shelf","ipa":"/ɒn//ʃelf/","note":""},{"w":"on the shelf","ipa":"","note":""},{"w":"desk","ipa":"/desk/","note":""},{"w":"table","ipa":"/teɪbl/","note":""},{"w":"plate","ipa":"/pleɪt/","note":""},{"w":"you - you","ipa":"","note":"文章跟读至熟读成诵"},{"w":"we - us","ipa":"","note":"文章跟读至熟读成诵"}],"examples":["The cup is on the cupboard.","Is the cup on the cupboard?","Where is the cup?","Give me a cup, please.","The one on the cupboard.","The cigarettes are on the plate."]},{"n":25,"page":56,"parts":[{"p":33,"t":"025 语法 单词","d":"14:56"},{"p":34,"t":"025 文章","d":"11:25"}],"hw":[{"k":"wb","t":"绿皮书 第25课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵读"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"参考自家厨房,利用 there be 句型造句20个","word":"there be","n":20},{"k":"extra","t":"参考自己的家,尝试用 there be 造20个句子,不会的单词请查词典"}],"words":[{"w":"kitchen","ipa":"/ˈkɪtʃən/","note":""},{"w":"in the kitchen","ipa":"","note":""},{"w":"electric","ipa":"/iˈlektrɪk/","note":""},{"w":"cooker","ipa":"/ˈkʊkə/","note":""},{"w":"refrigerator","ipa":"/rɪˈfrɪdʒəreɪtə/","note":"一般+否定+特殊"},{"w":"right  left","ipa":"/raɪt//left/","note":""},{"w":"on the left","ipa":"","note":""},{"w":"on the right","ipa":"","note":""},{"w":"middle","ipa":"/mɪdl/","note":""},{"w":"of  room","ipa":"/əv//ruːm/","note":""},{"w":"in the middle of the room","ipa":"","note":"某地有某物/人"}],"examples":["The table is in the kitchen.","Is the table in the kitchen?","Where is the table?","This is Leo's new cooker.","The new cooker is in the kitchen.","The refrigerator is in the kitchen."]},{"n":26,"page":60,"parts":[{"p":35,"t":"026 练习","d":"06:04"}],"hw":[{"k":"wb","t":"绿皮书 第26课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"给自己讲解一遍今天的核心知识点（建议）"},{"k":"make","t":"参考自家小区街道,用 there be造句20个句子,不会的单词自行查阅词典","word":"there be","n":20}],"words":[{"w":"clean cup","ipa":"","note":""},{"w":"large box","ipa":"","note":""},{"w":"sharp knife","ipa":"","note":""},{"w":"empty glass","ipa":"","note":""},{"w":"dirty fork","ipa":"","note":""},{"w":"full bottle","ipa":"","note":""},{"w":"blunt pencil","ipa":"","note":""},{"w":"small spoon","ipa":"","note":""}],"examples":["Is there a clean cup on the floor?","No, there isn't one on the floor.","There's a clean one on the table.","Is there a large box on the shelf?","No, there isn't one on the shelf.","There's a large one on the floor."]},{"n":27,"page":61,"parts":[{"p":36,"t":"027 语法 单词","d":"15:13"},{"p":37,"t":"027 语法 文章","d":"16:11"}],"hw":[{"k":"wb","t":"绿皮书 第27课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵读"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"参考自己客厅,用 there be句 型与 How many 造句 不会的单词请查阅词典","word":"there be + How many","n":null}],"words":[{"w":"living room","ipa":"/ˈlɪvɪŋ/","note":""},{"w":"in the living room","ipa":"","note":""},{"w":"near","ipa":"/nɪə/","note":""},{"w":"door","ipa":"/dɔː/","note":""},{"w":"near the door","ipa":"","note":""},{"w":"picture","ipa":"/ˈpɪktʃə/","note":""},{"w":"window","ipa":"/ˈwɪndəʊ/","note":""},{"w":"Windows","ipa":"","note":""},{"w":"armchair","ipa":"/ˈɑːmtʃeə/","note":""},{"w":"wall","ipa":"/wɔːl/","note":""},{"w":"Berlin Wall","ipa":"","note":""},{"w":"How many","ipa":"","note":""},{"w":"some VS any","ipa":"","note":"同:“一些”"}],"examples":["There are three cats in the picture.","Are there three cats in the picture?","There are three students in my class."]},{"n":28,"page":65,"parts":[{"p":38,"t":"028 单词 练习","d":"05:59"}],"hw":[{"k":"wb","t":"绿皮书 第28课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"some VS any","ipa":"","note":""},{"w":"trousers","ipa":"/ˈtraʊzəz/","note":""}],"examples":["No, there aren't __ books.","There are __ cigarettes.","Where are they?","They're near that box.","Are there __ ties on the floor?","No, there aren't __ ties."]},{"n":29,"page":66,"parts":[{"p":39,"t":"029 单词 语法 文章","d":"13:22"}],"hw":[{"k":"wb","t":"绿皮书 第29课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵读"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"shut","ipa":"/ʃʌt/","note":""},{"w":"shut the door","ipa":"","note":""},{"w":"bedroom","ipa":"/ˈbedruːm/","note":""},{"w":"put","ipa":"/pʊt/","note":""},{"w":"put it on the table","ipa":"","note":""},{"w":"clothes","ipa":"/kləʊðz/","note":""},{"w":"untidy","ipa":"/ʌnˈtaɪdi/","note":""},{"w":"open","ipa":"/ˈəʊpən/","note":""},{"w":"open the window","ipa":"","note":""},{"w":"air","ipa":"/eə/","note":""},{"w":"air the room","ipa":"","note":""},{"w":"wardrobe","ipa":"/ˈwɔːdrəʊb/","note":""},{"w":"dust","ipa":"/dʌst/","note":""},{"w":"dust the shelf","ipa":"","note":""},{"w":"sweep","ipa":"/swiːp/","note":""},{"w":"sweep the floor","ipa":"","note":""}],"examples":["Is this your bedroom?","Whose bedroom is this?","There is ___ in your bedroom?","Where are my clothes?","This room is untidy.","There is a wardrobe in the bedroom."]},{"n":30,"page":70,"parts":[{"p":40,"t":"030 练习 单词","d":"12:08"}],"hw":[{"k":"wb","t":"绿皮书 第30课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"给自己讲解一遍今天的核心知识点（建议）"}],"words":[{"w":"dust","ipa":"","note":""},{"w":"clean","ipa":"","note":""},{"w":"sharpen","ipa":"","note":""},{"w":"empty","ipa":"","note":""},{"w":"make","ipa":"","note":""},{"w":"open","ipa":"","note":""}],"examples":["The dressing table is dusty.","Dust the dressing table.","The bedroom carpet is dirty.","Clean the bedroom carpet.","The living room is untidy.","Dust / Clean the living room."]},{"n":31,"page":71,"parts":[{"p":41,"t":"031 语法 单词","d":"19:05"},{"p":42,"t":"031 语法 文章","d":"11:26"}],"hw":[{"k":"wb","t":"绿皮书 第31课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"观察您社区中,每个人在干什么? 造句30句","word":"现在进行时 be+doing","n":30},{"k":"make","t":"观察家人,用 be+doing 造句","word":"be+doing","n":null}],"words":[{"w":"dance-dancing","ipa":"","note":"1 双写 + ing"},{"w":"swimming","ipa":"","note":"现在进行时:否定句"},{"w":"garden","ipa":"/ˈɡɑːdən/","note":""},{"w":"under","ipa":"/ˈʌndə/","note":""},{"w":"run","ipa":"/rʌn/","note":""},{"w":"grass","ipa":"/ɡrɑːs/","note":""},{"w":"tree","ipa":"/triː/","note":""},{"w":"climb","ipa":"/klaɪm/","note":""},{"w":"who","ipa":"/huː/","note":""},{"w":"after","ipa":"/ˈɑːftə/","note":""},{"w":"across","ipa":"/əˈkrɒs/","note":""},{"w":"take off","ipa":"","note":""},{"w":"empty","ipa":"","note":""}],"examples":["She is reading a book.","They are dancing.","They are running on the street.","Is she opening the door?","Yes, she is.","Are they sitting on the floor?"]},{"n":32,"page":75,"parts":[{"p":43,"t":"032 单词 练习","d":"10:21"}],"hw":[{"k":"wb","t":"绿皮书 第32课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"总结 L29 L30 L31 L32的动词,练习造句","word":"本课单词","n":null}],"words":[{"w":"type","ipa":"/taɪp/","note":""},{"w":"letter","ipa":"/ˈletə/","note":""},{"w":"tooth-teeth","ipa":"/tuːθ/","note":""},{"w":"basket","ipa":"/ˈbɑː.skɪt/","note":""},{"w":"eat","ipa":"/iːt/","note":""},{"w":"bone","ipa":"/bəʊn/","note":""},{"w":"clean","ipa":"/kliːn/","note":""},{"w":"drink","ipa":"/drɪŋk/","note":""},{"w":"milk","ipa":"/mɪlk/","note":""},{"w":"tap","ipa":"/tæp/","note":""}],"examples":["What is she doing ?","Is she dancing?","Yes, she is.","She is dancing.","Is Nicola making the bed?","No, she isn't making the bed."]},{"n":33,"page":77,"parts":[{"p":44,"t":"033 单词","d":"10:34"},{"p":45,"t":"033 文章","d":"08:00"}],"hw":[{"k":"wb","t":"绿皮书 第33课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词混搭造句 5句","word":"单词混搭","n":5}],"words":[{"w":"walk","ipa":"/wɔːk/","note":""},{"w":"fly","ipa":"/flaɪ/","note":""},{"w":"day","ipa":"/deɪ/","note":""},{"w":"over","ipa":"/ˈəʊvə/","note":"单词混搭造句 5句"},{"w":"sky","ipa":"/skaɪ/","note":""},{"w":"cloud","ipa":"/klaʊd/","note":""},{"w":"with","ipa":"/wɪð/","note":""},{"w":"family","ipa":"/ˈfæməli/","note":""},{"w":"river","ipa":"/ˈrɪvə/","note":""},{"w":"ship","ipa":"/ʃɪp/","note":""},{"w":"aeroplane","ipa":"/ˈeərəpleɪn/","note":""}],"examples":["What is Iron man doing?","Iron man is flying.","It is a fine day.","They are walking across the street.","The bird is flying over the city.","The bird is flying in the sky."]},{"n":34,"page":80,"parts":[{"p":46,"t":"034 单词 练习","d":"08:26"}],"hw":[{"k":"wb","t":"绿皮书 第34课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"sleep-sleeping","ipa":"/sliːp/","note":""},{"w":"shave-shaving","ipa":"/ʃeɪv/","note":""},{"w":"wash-washing","ipa":"/wɒʃ/","note":""},{"w":"wait-waiting","ipa":"/weɪt/","note":""},{"w":"cry-crying","ipa":"/kraɪ/","note":""},{"w":"jump-jumping","ipa":"/dʒʌmp/","note":""}],"examples":["What are the cooks doing?","Are they washing dishes?","No, they aren't washing dishes.","They're cooking.","What are the children doing?","Are they crying?"]},{"n":35,"page":82,"parts":[{"p":47,"t":"035 语法 单词","d":"22:40"},{"p":48,"t":"035 文章","d":"09:43"}],"hw":[{"k":"wb","t":"绿皮书 第35课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"观察周围,用am/is/are doing + 介词 造句","word":"am/is/are doing + 介词","n":null}],"words":[{"w":"photograph photos","ipa":"/ˈfəʊtəɡrɑːf/","note":""},{"w":"village","ipa":"/ˈvɪlɪdʒ/","note":""},{"w":"water","ipa":"/ˈwɔː.tə/","note":""},{"w":"swim","ipa":"/swɪm/","note":""},{"w":"valley","ipa":"/ˈvæli/","note":""},{"w":"hill","ipa":"/hɪl/","note":""},{"w":"another","ipa":"/əˈnʌðə/","note":""},{"w":"wife husband","ipa":"/waɪf//ˈhʌzbənd/","note":""},{"w":"bank","ipa":"/bæŋk/","note":""},{"w":"river bank","ipa":"","note":""},{"w":"building","ipa":"/ˈbɪldɪŋ/","note":""},{"w":"park","ipa":"/pɑːk/","note":"prep. 介词"},{"w":"between","ipa":"/bɪˈtwiːn/","note":""},{"w":"into  out of","ipa":"/ˈɪntuː/","note":""},{"w":"along  across","ipa":"/əˈlɒŋ//əˈkrɒs/","note":""},{"w":"beside  near","ipa":"/bɪˈsaɪd/","note":""}],"examples":["This is a photo of my parents.","They are sitting under the tree.","She is drinking water.","Is she drinking water?","What is she drinking?","What is the man doing?"]},{"n":36,"page":87,"parts":[{"p":49,"t":"036 练习","d":"05:12"}],"hw":[{"k":"wb","t":"绿皮书 第36课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[],"examples":["Where's the man going?","He's going into the shop.","Is he going into the shop?","Where's the woman going?","She's going out of the shop.","Is she going out of the shop?"]},{"n":37,"page":88,"parts":[{"p":50,"t":"037 语法 单词","d":"22:03"},{"p":51,"t":"037 文章","d":"10:26"}],"hw":[{"k":"wb","t":"绿皮书 第37课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"观察生活,利用 going to 造句","word":"going to","n":null}],"words":[{"w":"gonna do","ipa":"","note":""},{"w":"work","ipa":"/wɜːk/","note":""},{"w":"hard","ipa":"/hɑːd/","note":""},{"w":"hammer","ipa":"/ˈhæmə/","note":"+v. (往前翻)"},{"w":"paint","ipa":"/peɪnt/","note":""},{"w":"make","ipa":"/meɪk/","note":"多模仿少创造"},{"w":"make a shelf","ipa":"","note":""},{"w":"bookcase","ipa":"/ˈbʊkkeɪs/","note":""},{"w":"pink","ipa":"/pɪŋk/","note":""},{"w":"favourite","ipa":"/ˈfeɪvərɪt/","note":""},{"w":"dish-dishes","ipa":"/dɪʃ/","note":""},{"w":"listen to","ipa":"","note":""},{"w":"walk-wait for","ipa":"","note":""},{"w":"homework","ipa":"/ˈhəʊmwɜːk/","note":""},{"w":"do my homework","ipa":"","note":""},{"w":"listen","ipa":"/ˈlɪsən/","note":""}],"examples":["This is for my mother.","Is this for your mother?","Who is this for?","This umbrella is for you.","Is this umbrella for me?","Who is this umbrella for?"]},{"n":38,"page":94,"parts":[{"p":52,"t":"038 单词 练习","d":"08:29"}],"hw":[{"k":"wb","t":"绿皮书 第38课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"分别用现在进行时&一般将来时造句","word":"现在进行时&一般将来时","n":null}],"words":[{"w":"wait for","ipa":"","note":""},{"w":"paint","ipa":"","note":""},{"w":"wash","ipa":"","note":""}],"examples":["What are you doing now?","We're waiting for a bus.","What is he going to do?","He is going to paint this wall.","We are painting this wall.","What are you going to do?"]},{"n":39,"page":95,"parts":[{"p":53,"t":"039 语法 单词 文章","d":"23:43"}],"hw":[{"k":"wb","t":"绿皮书 第39课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"drop","ipa":"/drɒp/","note":""},{"w":"front","ipa":"/frʌnt/","note":""},{"w":"in front of","ipa":"","note":""},{"w":"in the front of","ipa":"","note":""},{"w":"careful","ipa":"/ˈkeəfəl/","note":""},{"w":"flower","ipa":"/flaʊə/","note":""},{"w":"vase  vase","ipa":"/vɑːz//veɪs/","note":""}],"examples":["The man is front of the car.","The man is in the front of the car.","I am going to drop that. Catch it.","Don't drop it.","Don't eat on the bus.","He is going to eat that flower."]},{"n":40,"page":98,"parts":[{"p":54,"t":"040 单词 练习","d":"07:48"}],"hw":[{"k":"wb","t":"绿皮书 第40课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"take","ipa":"/teɪk/","note":""},{"w":"show","ipa":"/ʃəʊ/","note":""},{"w":"send","ipa":"/send/","note":""},{"w":"put on","ipa":"","note":""},{"w":"take off","ipa":"","note":""},{"w":"turn on","ipa":"","note":""},{"w":"turn off","ipa":"","note":""}],"examples":["Are you going to put on your hat?","Yes, I'm going to put it on.","Are you going to take off your hat?","No, I'm not going to take it off.","Yes, I'm going to take them off.","Are you going to turn on the light?"]},{"n":41,"page":99,"parts":[{"p":55,"t":"041 语法 单词 文章","d":"20:43"}],"hw":[{"k":"wb","t":"绿皮书 第41课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"cheese","ipa":"/tʃiːz/","note":""},{"w":"a piece of cheese","ipa":"","note":""},{"w":"bread","ipa":"/bred/","note":""},{"w":"a piece of bread","ipa":"","note":""},{"w":"a loaf of bread","ipa":"","note":""},{"w":"sugar","ipa":"/ˈʃʊɡə/","note":""},{"w":"a pound of sugar","ipa":"","note":""},{"w":"coffee","ipa":"/ˈkɒfɪ/","note":""},{"w":"a cup of coffee","ipa":"","note":""},{"w":"soap","ipa":"/səʊp/","note":""},{"w":"a bar of soap","ipa":"","note":""},{"w":"some soap","ipa":"","note":""},{"w":"chocolate","ipa":"/ˈtʃɒklɪt/","note":""},{"w":"a bar of chocolate","ipa":"","note":""},{"w":"tea","ipa":"/tiː/","note":""},{"w":"half a pound of tea","ipa":"","note":""}],"examples":["There is a pen on the table.","There are some pens on the table.","There is a piece of cheese on the table.","There is some cheese on the table."]},{"n":42,"page":102,"parts":[{"p":56,"t":"042 单词 练习","d":"06:28"}],"hw":[{"k":"wb","t":"绿皮书 第42课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"Bird 造句*10","word":"bird","n":10}],"words":[{"w":"bird","ipa":"/bɜːd/","note":"单词+句型"},{"w":"passport","ipa":"","note":""},{"w":"milk","ipa":"","note":""},{"w":"spoon","ipa":"","note":""},{"w":"tie","ipa":"","note":""},{"w":"bread","ipa":"","note":""},{"w":"hammer","ipa":"","note":"Bird 造句*10 (总结关键句型)"},{"w":"tea","ipa":"","note":""},{"w":"vase","ipa":"","note":""},{"w":"suit","ipa":"","note":""},{"w":"tobacco","ipa":"","note":""},{"w":"chocolate","ipa":"","note":""},{"w":"cheese","ipa":"","note":""}],"examples":["Is there a passport here?","Is there any milk here?","Is there a spoon here?","Is there a tie here?","Is there any bread here?","Is there a hammer here?"]},{"n":43,"page":103,"parts":[{"p":57,"t":"043 语法 单词","d":"18:51"},{"p":58,"t":"043 文章","d":"10:36"}],"hw":[{"k":"wb","t":"绿皮书 第43课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"of course","ipa":"/əv//kɔːs/","note":""},{"w":"kettle","ipa":"/ketl/","note":""},{"w":"teapot","ipa":"/ˈtiːpɒt/","note":""},{"w":"now","ipa":"/naʊ/","note":""},{"w":"behind","ipa":"/bɪˈhaɪnd/","note":""},{"w":"in front of","ipa":"","note":""},{"w":"find","ipa":"/faɪnd/","note":""},{"w":"boil","ipa":"/bɔɪl/","note":""},{"w":"bread","ipa":"","note":""},{"w":"hammers","ipa":"","note":""},{"w":"milk","ipa":"","note":""},{"w":"soap","ipa":"","note":""},{"w":"newspapers","ipa":"","note":""},{"w":"water","ipa":"","note":""},{"w":"tea","ipa":"","note":""},{"w":"cups","ipa":"","note":""}],"examples":["Is there any bread here?","Yes, there is.","There's some on the table.","Are there any hammers here?","Yes, there are.","There are some behind that box."]},{"n":44,"page":106,"parts":[{"p":59,"t":"044 练习","d":"06:26"}],"hw":[{"k":"wb","t":"绿皮书 第44课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"tea","ipa":"","note":""},{"w":"cups","ipa":"","note":""},{"w":"chocolate","ipa":"","note":""},{"w":"teapots","ipa":"","note":""},{"w":"cars","ipa":"","note":""},{"w":"coffee","ipa":"","note":""}],"examples":["Is there any tea here?","Yes, there is.","There's some in those cups.","Are there any cups here?","Yes, there are.","Is there any chocolate here?"]},{"n":45,"page":107,"parts":[{"p":60,"t":"045 单词 文章","d":"16:52"}],"hw":[{"k":"wb","t":"绿皮书 第45课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"boss","ipa":"/bɒs/","note":""},{"w":"minute","ipa":"/ˈmɪnɪt/","note":""},{"w":"handwriting","ipa":"/ˈhændraɪtɪŋ/","note":""},{"w":"terrible","ipa":"/ˈterəbəl/","note":""},{"w":"terrible handwriting","ipa":"","note":""},{"w":"ask","ipa":"/ɑːsk/","note":""}],"examples":["Who is that?","That is my boss.","Is he your boss?","Look, our boss is waiting for the bus.","This is my handwriting.","Is this Leo's handwriting?"]},{"n":46,"page":110,"parts":[{"p":61,"t":"046 单词 练习","d":"08:31"}],"hw":[{"k":"wb","t":"绿皮书 第46课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"cake 造句*20","word":"cake","n":20}],"words":[{"w":"lift","ipa":"/lɪft/","note":""},{"w":"cake","ipa":"/keɪk/","note":""},{"w":"biscuit","ipa":"/ˈbɪskɪt/","note":""},{"w":"make biscuits","ipa":"","note":""},{"w":"put on your coat","ipa":"","note":""},{"w":"wait for the bus","ipa":"","note":""},{"w":"listen to the stereo","ipa":"","note":""},{"w":"wash the dishes","ipa":"","note":""},{"w":"take these flowers to her","ipa":"","note":""},{"w":"drink its milk","ipa":"","note":""},{"w":"paint this bookcase","ipa":"","note":""},{"w":"see that aeroplane","ipa":"","note":""}],"examples":["Can you put on your coat?","Yes, I can.","What can you do?","Can Penny wait for the bus?","Yes, she can.","What can she do?"]},{"n":47,"page":111,"parts":[{"p":62,"t":"047 语法 单词 文章","d":"15:14"}],"hw":[{"k":"wb","t":"绿皮书 第47课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"like","ipa":"/laɪk/","note":""},{"w":"want","ipa":"/wɒnt/","note":"文章跟读至熟读成诵"}],"examples":["I want tea.","Do you want tea?","Why don't you want coffee?","I don't want tea.","What do you want?","I want this job."]},{"n":48,"page":113,"parts":[{"p":63,"t":"048 练习 单词","d":"10:30"}],"hw":[{"k":"wb","t":"绿皮书 第48课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"butter","ipa":"/ˈbʌtə/","note":""},{"w":"Scotch  whisky","ipa":"/skɒtʃ//ˈwɪski/","note":""},{"w":"jam","ipa":"/dʒæm/","note":""},{"w":"wine","ipa":"/waɪn/","note":""},{"w":"beer","ipa":"/bɪə/","note":""},{"w":"blackboard","ipa":"/ˈblækbɔːd/","note":""},{"w":"eggs","ipa":"","note":""},{"w":"honey","ipa":"","note":""},{"w":"bananas","ipa":"","note":""},{"w":"oranges","ipa":"","note":""},{"w":"ice cream","ipa":"","note":""},{"w":"whisky","ipa":"","note":""},{"w":"apples","ipa":"","note":""},{"w":"biscuits","ipa":"","note":""}],"examples":["Do you like eggs?","Do you like butter?","Do you like honey?","Do you like bananas?","Do you like jam?","Do you like oranges?"]},{"n":49,"page":115,"parts":[{"p":64,"t":"049 单词","d":"11:17"},{"p":65,"t":"049 语法 文章","d":"19:56"}],"hw":[{"k":"wb","t":"绿皮书 第49课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的 核心知识点"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*5","word":"本课单词","n":5}],"words":[{"w":"butcher","ipa":"/ˈbʊtʃə/","note":""},{"w":"at the butcher's","ipa":"","note":""},{"w":"meat","ipa":"/miːt/","note":""},{"w":"steak","ipa":"/steɪk/","note":""},{"w":"mince","ipa":"/mɪns/","note":"单词造句*5"},{"w":"beef","ipa":"/biːf/","note":""},{"w":"lamb","ipa":"/læm/","note":""},{"w":"pork","ipa":"/pɔːk/","note":""},{"w":"husband","ipa":"/ˈhʌzbənd/","note":""},{"w":"chicken","ipa":"/ˈtʃɪkɪn/","note":""},{"w":"tell","ipa":"/tel/","note":""},{"w":"truth","ipa":"/truːθ/","note":"一般现在时:肯定句"},{"w":"tell me the truth","ipa":"","note":"一般现在时:肯定句"}],"examples":["He likes coffee.","He washes dishes every day.","The baby cries every night.","He buys a new phone every year.","She likes tea.","She doesn't like tea."]},{"n":50,"page":119,"parts":[{"p":66,"t":"050 单词 练习","d":"06:26"}],"hw":[{"k":"wb","t":"绿皮书 第50课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"tomato","ipa":"/təˈmɑːtəʊ/","note":""},{"w":"potato","ipa":"/pəˈteɪtəʊ/","note":""},{"w":"pear","ipa":"/peə/","note":""},{"w":"grape","ipa":"/ɡreɪp/","note":""},{"w":"cabbage","ipa":"/ˈkæbɪdʒ/","note":""},{"w":"lettuce","ipa":"/ˈletɪs/","note":""},{"w":"pea","ipa":"/piː/","note":""},{"w":"bean","ipa":"/biːn/","note":""},{"w":"peach","ipa":"/piːtʃ/","note":""},{"w":"banana","ipa":"","note":""},{"w":"orange","ipa":"","note":""},{"w":"apple","ipa":"","note":""}],"examples":["Does Penny like tomatoes?","What does Penny like/want?","Yes, she does.","Do you like potatoes?","Yes, I do.","Does Elizabeth like pears?"]},{"n":51,"page":120,"parts":[{"p":67,"t":"051 文章","d":"13:36"},{"p":68,"t":"051 单词","d":"20:04"}],"hw":[{"k":"wb","t":"绿皮书 第51课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句","word":"本课单词","n":null}],"words":[{"w":"Greece Greek","ipa":"/ɡriːs//ɡriːk/","note":""},{"w":"climate","ipa":"/ˈklaɪmɪt/","note":""},{"w":"snow","ipa":"/snəʊ/","note":""},{"w":"country","ipa":"/ˈkʌntri/","note":""},{"w":"in my country","ipa":"","note":""},{"w":"windy","ipa":"/ˈwɪndi/","note":""},{"w":"warm","ipa":"/wɔːm/","note":""},{"w":"March April May","ipa":"/mɑːtʃ//ˈeɪprəl//meɪ/","note":""},{"w":"spring","ipa":"","note":""},{"w":"June July August","ipa":"/dʒuːn//dʒuˈlaɪ//ˈɔːɡəst/","note":""},{"w":"summer","ipa":"","note":""},{"w":"September October November","ipa":"/sepˈtembə//ɒkˈtəʊbə//nəʊˈvembə/","note":""},{"w":"autumn","ipa":"","note":""},{"w":"December January February","ipa":"/dɪˈsembə//ˈdʒænjuəri//ˈfebruəri/","note":""},{"w":"winter","ipa":"","note":""}],"examples":["He comes from Greece.","Does he come from Greece?","Where does he come from?","He is from Greece.","Is he from Greece?","Where is he from?"]},{"n":52,"page":124,"parts":[{"p":69,"t":"052 单词 练习","d":"06:36"}],"hw":[{"k":"wb","t":"绿皮书 第52课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"Brazil","ipa":"/brəˈzɪl/","note":""},{"w":"Italy","ipa":"/ˈɪtəli/","note":""},{"w":"Norway","ipa":"/ˈnɔːweɪ/","note":""},{"w":"Holland","ipa":"/ˈhɒlənd/","note":""},{"w":"England","ipa":"","note":""},{"w":"France","ipa":"/frɑːns/","note":""},{"w":"Germany","ipa":"/ˈdʒɜːməni/","note":""},{"w":"Russia","ipa":"/ˈrʌʃə/","note":""},{"w":"Spain","ipa":"/speɪn/","note":""},{"w":"Sweden","ipa":"/ˈswiːdən/","note":""}],"examples":["Does he come from the U.S.?","No, he doesn't come from the U.S.","He comes from Brazil.","Do you come from Brazil?","No, I don't come from Brazil.","Does he come from Italy?"]},{"n":53,"page":125,"parts":[{"p":70,"t":"053 单词","d":"16:07"},{"p":71,"t":"053 文章","d":"10:52"}],"hw":[{"k":"wb","t":"绿皮书 53课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句","word":"本课单词","n":null}],"words":[{"w":"mild always","ipa":"/maɪld//ˈɔːlweɪz/","note":""},{"w":"north east west south","ipa":"/nɔːθ//iːst//west//saʊθ/","note":""},{"w":"in the north","ipa":"","note":""},{"w":"rise early","ipa":"/raɪz//ˈɜːli/","note":""},{"w":"set late","ipa":"/set//leɪt/","note":"单词造句"},{"w":"wet","ipa":"/wet/","note":""},{"w":"season","ipa":"/ˈsiːzən/","note":""},{"w":"best","ipa":"/best/","note":""},{"w":"night","ipa":"/naɪt/","note":""},{"w":"at night","ipa":"","note":""},{"w":"interesting","ipa":"/ˈɪntrəstɪŋ/","note":""},{"w":"subject","ipa":"/ˈsʌbdʒekt/","note":""},{"w":"conversation","ipa":"/kɒnvəˈseɪʃən/","note":""},{"w":"have a conversation","ipa":"","note":""}],"examples":["This is a photo of Auckland.","What's the climate like in Auckland?","It's always mild.","The sun rises early in summer.","The sun rises late in winter.","The sun sets early in winter."]},{"n":54,"page":128,"parts":[{"p":72,"t":"054 练习 单词","d":"07:05"}],"hw":[{"k":"wb","t":"绿皮书 第54课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"Australia Australian","ipa":"/ɒsˈtreɪliə//ɒsˈtreɪliən/","note":""},{"w":"Austria Austrian","ipa":"/ˈɒstriə//ˈɒstriːən/","note":""},{"w":"Nigeria Nigerian","ipa":"/naɪˈdʒɪəriə//naɪˈdʒɪəriən/","note":""},{"w":"Turkey Turkish","ipa":"/ˈtɜːki//ˈtɜːkɪʃ/","note":""},{"w":"Canada Canadian","ipa":"/ˈkænədə//kəˈneɪdiən/","note":""},{"w":"Finland Finnish","ipa":"/ˈfɪnlənd//ˈfɪnɪʃ/","note":""},{"w":"India Indian","ipa":"/ˈɪndiə//ˈɪndiən/","note":""},{"w":"Korea Korean","ipa":"/kəˈriə/","note":""},{"w":"Poland Polish","ipa":"/ˈpəʊlənd//ˈpɒlɪʃ/","note":""},{"w":"Thailand Thai","ipa":"/ˈtaɪlænd//taɪ/","note":""}],"examples":["Where do you come from?","Are you Australian?","Yes, I come from Australia.","Where does he come from?","Is he Austrian?","Yes, he comes from Austria."]},{"n":55,"page":129,"parts":[{"p":73,"t":"055 单词","d":"14:01"},{"p":74,"t":"055 文章","d":"14:09"}],"hw":[{"k":"wb","t":"绿皮书 第55课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"给自己讲解一遍今天的核心知识点（建议）"}],"words":[{"w":"live","ipa":"/lɪv/","note":"live in + 国家城市"},{"w":"stay home usually","ipa":"/steɪ//həʊm//ˈjuːʒuəli/","note":"stay in 国家城市"},{"w":"arrive","ipa":"/əˈraɪv/","note":""},{"w":"afternoon","ipa":"/ɑːftəˈnuːn/","note":""},{"w":"in the afternoon","ipa":"","note":"描述一下自己一天的生活 (一般现在时)"},{"w":"housework","ipa":"/ˈhaʊswɜːk/","note":""},{"w":"do the housework","ipa":"","note":""},{"w":"can","ipa":"","note":""},{"w":"lunch together","ipa":"","note":""},{"w":"evening","ipa":"/ˈiːvnɪŋ/","note":""},{"w":"in the evening","ipa":"","note":""}],"examples":["She lives in Beijing.","Does she live in Beijing?","Where does she live?","He usually stays at home with his child at night.","Does he usually stay at home at night?","How often does he stay at home at night?"]},{"n":56,"page":132,"parts":[{"p":75,"t":"056 单词 练习","d":"05:03"}],"hw":[{"k":"wb","t":"绿皮书 第56课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"dusts the cupboard","ipa":"","note":""},{"w":"makes the bed","ipa":"","note":""},{"w":"shaves","ipa":"","note":""},{"w":"listen to the stereo","ipa":"","note":""},{"w":"cleans the blackboard","ipa":"","note":""},{"w":"go to bed","ipa":"","note":""},{"w":"washes the dishes","ipa":"","note":""},{"w":"type letters","ipa":"","note":""},{"w":"drinks milk","ipa":"","note":""},{"w":"watch television","ipa":"","note":""},{"w":"eats her lunch","ipa":"","note":""},{"w":"reads his newspaper","ipa":"","note":""}],"examples":["He always shaves in the morning.","What does he always do every day?","What do they always do at night?","They always go to bed at night.","What does she usually do every day?","It usually drinks milk every day."]},{"n":57,"page":133,"parts":[{"p":76,"t":"057 单词 文章","d":"17:51"}],"hw":[{"k":"wb","t":"绿皮书 第57课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍本课的核心知识点"}],"words":[{"w":"o'clock","ipa":"/əˈklɒk/","note":""},{"w":"shop","ipa":"/ʃɒp/","note":""},{"w":"moment","ipa":"/ˈməʊmənt/","note":""},{"w":"at the moment","ipa":"","note":""}],"examples":["What time is it?","What's the time.","It's 3 o'clock.","Is it 3 o'clock?","There are many shops in this street.","She is doing the housework at the moment."]},{"n":58,"page":136,"parts":[{"p":77,"t":"058 单词 语法 练习","d":"14:03"}],"hw":[{"k":"wb","t":"绿皮书 第58课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"extra","t":"随时看表说出时间"}],"words":[],"examples":["It is six o'clock.","Is it six o'clock?","What time is it?","What's the time?","What does he usually do every day?","What is he doing today?"]},{"n":59,"page":137,"parts":[{"p":78,"t":"059 文章","d":"07:36"},{"p":79,"t":"059 单词","d":"09:46"}],"hw":[{"k":"wb","t":"绿皮书第59课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句,结合不同时态和大结构","word":"本课单词","n":null}],"words":[{"w":"pad","ipa":"/pæd/","note":""},{"w":"envelope","ipa":"/ˈenvələʊp/","note":""},{"w":"writing  paper","ipa":"/ˈraɪtɪŋ//ˈpeɪpə/","note":""},{"w":"glue","ipa":"/ɡluː/","note":""},{"w":"shop assistant","ipa":"","note":""},{"w":"size","ipa":"/saɪz/","note":""},{"w":"chalk","ipa":"/tʃɔːk/","note":""},{"w":"change","ipa":"/tʃeɪndʒ/","note":""},{"w":"cheese","ipa":"","note":""},{"w":"potatoes","ipa":"","note":""},{"w":"beer","ipa":"","note":""},{"w":"jam","ipa":"","note":""},{"w":"biscuits","ipa":"","note":""},{"w":"bananas","ipa":"","note":""}],"examples":["Do you have any butter?","Do you and Penny have any beans?","Do Penny and Tom have any wine?","Do you have any honey?","Do you and Tom have any bread?","Do Tom and Penny have any grapes?"]},{"n":60,"page":140,"parts":[{"p":80,"t":"060 练习","d":"04:23"}],"hw":[{"k":"wb","t":"绿皮书 第60课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"steak","ipa":"","note":""},{"w":"eggs","ipa":"","note":""},{"w":"cabbages","ipa":"","note":""},{"w":"peas","ipa":"","note":""}],"examples":["Do you have any mince?","Do the children have any butter?","Do you have any lettuces?","Do you and Penny have any beans?"]},{"n":61,"page":141,"parts":[{"p":81,"t":"061 单词","d":"18:12"},{"p":82,"t":"061 文章","d":"12:29"}],"hw":[{"k":"wb","t":"绿皮书 第61课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3}],"words":[{"w":"look","ipa":"/lʊk/","note":""},{"w":"remember","ipa":"/rɪˈmembər/","note":""},{"w":"sound","ipa":"","note":""},{"w":"smell","ipa":"","note":""},{"w":"taste","ipa":"","note":""},{"w":"call me","ipa":"","note":""},{"w":"give me a call","ipa":"","note":""},{"w":"cold","ipa":"/kəʊld/","note":""},{"w":"bad news","ipa":"","note":""},{"w":"good news","ipa":"","note":""}],"examples":["She feels great.","She doesn't feel bad.","Does she feel great?","How does she feel?","He looks ill.","Does he look ill?"]},{"n":62,"page":144,"parts":[{"p":83,"t":"062 单词 练习","d":"14:01"}],"hw":[{"k":"wb","t":"绿皮书 第62课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句","word":"本课单词","n":null}],"words":[{"w":"sit up","ipa":"","note":""},{"w":"take off these glasses","ipa":"","note":""},{"w":"aspirin","ipa":"/ˈæsprɪn/","note":""},{"w":"take an aspirin","ipa":"","note":""},{"w":"medicine","ipa":"/ˈmedɪsən/","note":""},{"w":"temperature","ipa":"/ˈtempərətʃə/","note":""},{"w":"earache","ipa":"/ˈɪəreɪk/","note":""},{"w":"have an earache","ipa":"","note":""},{"w":"toothache","ipa":"/ˈtuːθeɪk/","note":""},{"w":"dentist","ipa":"/ˈdentɪst/","note":""},{"w":"stomach ache","ipa":"/ˈstʌmək//eɪk/","note":""},{"w":"flu","ipa":"/fluː/","note":""},{"w":"measles","ipa":"/ˈmiːzəlz/","note":""},{"w":"have measles","ipa":"","note":""},{"w":"mumps","ipa":"/mʌmps/","note":""},{"w":"have mumps","ipa":"","note":""}],"examples":["What's the matter with her?","Does she have an earache?","She doesn't have an earache.","She has a headache.","What must she do?","She must take an aspirin."]},{"n":63,"page":146,"parts":[{"p":84,"t":"063 语法 单词","d":"18:14"},{"p":85,"t":"063 文章","d":"09:13"}],"hw":[{"k":"wb","t":"绿皮书 第63课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3}],"words":[{"w":"can","ipa":"","note":""},{"w":"better","ipa":"/ˈbetə/","note":""},{"w":"certainly","ipa":"/ˈsɜːtənli/","note":""},{"w":"Excuse me","ipa":"","note":""},{"w":"rich food","ipa":"","note":""},{"w":"rich poor","ipa":"","note":""},{"w":"remain","ipa":"/rɪˈmeɪn/","note":"单词造句*3"},{"w":"wake up","ipa":"","note":""},{"w":"library","ipa":"/ˈlaɪbrəri/","note":"文章跟读至熟读成诵"},{"w":"play","ipa":"/pleɪ/","note":""},{"w":"match","ipa":"/mætʃ/","note":""},{"w":"play with matches","ipa":"","note":""},{"w":"go to the library","ipa":"","note":""},{"w":"drive","ipa":"/draɪv/","note":""},{"w":"drive my car","ipa":"","note":""},{"w":"talk","ipa":"/tɔːk/","note":""}],"examples":["I can help you.","I can't help you.","Can you help me?","What can you do?","I have a very bad headache.","I must call the doctor."]},{"n":64,"page":151,"parts":[{"p":86,"t":"064 单词 文章","d":"12:58"}],"hw":[{"k":"wb","t":"绿皮书 第64课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3}],"words":[{"w":"lean out of","ipa":"","note":""},{"w":"noise","ipa":"/nɔɪz/","note":""},{"w":"make a noise","ipa":"","note":""},{"w":"break the window","ipa":"","note":""},{"w":"break my arm","ipa":"","note":""},{"w":"take any aspirins","ipa":"","note":""},{"w":"take this medicine","ipa":"","note":""},{"w":"call the doctor","ipa":"","note":""},{"w":"play with matches","ipa":"","note":""},{"w":"talk in the library","ipa":"","note":"单词造句*3"},{"w":"drive so quickly","ipa":"","note":""},{"w":"break that vase","ipa":"","note":""}],"examples":["Don't take any aspirins!","You mustn't take any aspirins.","Don't take this medicine!","You mustn't take this medicine.","Don't call the doctor!","You mustn't call the doctor."]},{"n":65,"page":152,"parts":[{"p":87,"t":"065 单词 文章","d":"23:24"}],"hw":[{"k":"wb","t":"绿皮书 第65课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"Dad Mum","ipa":"/dæd//mʌm/","note":""},{"w":"key","ipa":"/kiː/","note":""},{"w":"baby","ipa":"/ˈbeɪbi/","note":""},{"w":"hear","ipa":"/hɪə/","note":""},{"w":"enjoy yourself","ipa":"/ɪnˈdʒɔɪ//jɔːˈself/","note":""},{"w":"enjoy yourselves","ipa":"","note":""},{"w":"enjoy ourselves","ipa":"/ɪnˈdʒɔɪ//aʊəˈselvz/","note":""},{"w":"I me my myself","ipa":"","note":""},{"w":"he him his himself","ipa":"","note":""},{"w":"she her her herself","ipa":"","note":""},{"w":"it it its itself","ipa":"","note":"人称"},{"w":"you you your yourself","ipa":"","note":"人称"},{"w":"you you your yourselves","ipa":"","note":"人称"},{"w":"they them their themselves","ipa":"","note":"人称"}],"examples":["We're gonna have a party tonight.","We're gonna enjoy ourselves.","My dad is driving now.","My mum is going to call my dad.","Can you find the key?","I am cleaning the key now. It's very dirty."]},{"n":66,"page":156,"parts":[{"p":88,"t":"066 单词 练习","d":"06:08"}],"hw":[{"k":"wb","t":"绿皮书 第66课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"extra","t":"整理与人称相关的词汇"}],"words":[],"examples":["When must you come home?","When must she go to the library?","When must you type this letter?","When must Sophie drive to London?","When must I catch the bus?","When must you arrive there?"]},{"n":67,"page":157,"parts":[{"p":89,"t":"067 语法 文章","d":"12:35"},{"p":90,"t":"067 语法 单词","d":"20:28"}],"hw":[{"k":"wb","t":"绿皮书 第67课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"尝试利用索引/目录在红皮书中查找到 was/were"}],"words":[{"w":"wasn't weren't","ipa":"","note":"一般过去时"},{"w":"greengrocer","ipa":"/ˈɡriːŋɡrəʊsə/","note":""},{"w":"absent","ipa":"/ˈæbsənt/","note":""},{"w":"be absent from","ipa":"","note":""},{"w":"country","ipa":"/ˈkʌntri/","note":""},{"w":"country music","ipa":"","note":""},{"w":"lucky","ipa":"/ˈlʌki/","note":""},{"w":"lucky number","ipa":"","note":"单词造句*3"},{"w":"spend","ipa":"/spend/","note":""},{"w":"Monday  Tuesday","ipa":"/ˈmʌndeɪ//ˈtʃuːzdeɪ/","note":""},{"w":"Wednesday  Thursday","ipa":"","note":""},{"w":"Friday","ipa":"/ˈfraɪdeɪ/","note":""},{"w":"Saturday  Sunday  weekend","ipa":"/ˈsætədeɪ//ˈsʌndeɪ//ˈwiːkend/","note":"否定疑问句-难道"}],"examples":["He is a teacher.","He was a teacher.","He was ill.","He is better now.","We were at home in the morning.","Now we are at school."]},{"n":68,"page":161,"parts":[{"p":91,"t":"068 单词 练习","d":"07:08"}],"hw":[{"k":"wb","t":"绿皮书 第68课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"church","ipa":"/tʃɜːtʃ/","note":""},{"w":"at church","ipa":"","note":""},{"w":"dairy","ipa":"/ˈdeəri/","note":""},{"w":"at the dairy","ipa":"","note":""},{"w":"grocer","ipa":"/ˈɡrəʊsə/","note":""},{"w":"at the grocer's","ipa":"","note":""},{"w":"baker","ipa":"/ˈbeɪkə/","note":""},{"w":"at the baker's","ipa":"","note":""},{"w":"at the hairdresser's","ipa":"","note":""},{"w":"at the butcher's","ipa":"","note":""},{"w":"at home","ipa":"","note":""},{"w":"at the office","ipa":"","note":""},{"w":"at the greengrocer's","ipa":"","note":""},{"w":"at school","ipa":"","note":""}],"examples":["When was Tom at the hairdresser's?","When were you at home?","Were you at home on Sunday?","When was Miss Grey at the office?","She was at the office on Tuesday.","Was she at the office on Tuesday?"]},{"n":69,"page":163,"parts":[{"p":92,"t":"069 语法 单词","d":"16:22"},{"p":93,"t":"069 文章","d":"09:53"}],"hw":[{"k":"wb","t":"绿皮书 第69课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"红皮书查找 there + was"}],"words":[{"w":"there be","ipa":"","note":""},{"w":"year","ipa":"/jɪə/","note":""},{"w":"next year","ipa":"","note":""},{"w":"last year","ipa":"","note":""},{"w":"race","ipa":"/reɪs/","note":""},{"w":"car race","ipa":"","note":""},{"w":"crowd","ipa":"/kraʊd/","note":""},{"w":"a large crowd of people","ipa":"","note":""},{"w":"stand","ipa":"/stænd/","note":""},{"w":"town","ipa":"/taʊn/","note":""},{"w":"exciting","ipa":"/ɪkˈsaɪtɪŋ/","note":""},{"w":"behind","ipa":"/bɪˈhaɪnd/","note":""},{"w":"way","ipa":"/weɪ/","note":"哔哩哔哩 胶囊助学计划"},{"w":"on the way home","ipa":"","note":"哔哩哔哩 胶囊助学计划"}],"examples":["Where is the pen?","There was a pen on the table.","It's not here.","I'm gonna buy a new car next year.","I was in Auckland last year.","We're gonna watch a car race tonight."]},{"n":70,"page":166,"parts":[{"p":94,"t":"070 单词 练习","d":"05:08"}],"hw":[{"k":"wb","t":"绿皮书 第70课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"stationer","ipa":"/ˈsteɪʃənə/","note":""},{"w":"at the stationer's","ipa":"","note":""},{"w":"Denmark","ipa":"/ˈdenmɑːk/","note":""},{"w":"at the office","ipa":"","note":""},{"w":"in India","ipa":"","note":""},{"w":"in Australia","ipa":"","note":""},{"w":"at the dairy","ipa":"","note":""},{"w":"in Austria","ipa":"","note":""},{"w":"at home","ipa":"","note":""},{"w":"at the hairdresser's","ipa":"","note":""},{"w":"in Finland","ipa":"","note":""}],"examples":["When was I in India?","You were in India in 1985.","We were in Australia in July.","When was I at the dairy?","You were at the dairy on Saturday.","When were George and I in Austria?"]},{"n":71,"page":167,"parts":[{"p":95,"t":"071 语法 单词","d":"21:46"},{"p":96,"t":"071 文章","d":"09:29"}],"hw":[{"k":"wb","t":"绿皮书 第71课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"红皮书查找 did"}],"words":[{"w":"awful","ipa":"/ˈɔːfəl/","note":""},{"w":"call me","ipa":"","note":""},{"w":"answer","ipa":"/ˈɑːnsə/","note":""},{"w":"last","ipa":"/lɑːst/","note":""},{"w":"last night","ipa":"","note":""},{"w":"last week","ipa":"","note":""},{"w":"last year","ipa":"","note":""},{"w":"time","ipa":"/taɪm/","note":""},{"w":"how many times","ipa":"","note":""}],"examples":["He looked nice yesterday.","We enjoyed ourselves yesterday.","She emptied the basket yesterday.","Did you love me?","Did you live in Auckland last year?","What did he do yesterday afternoon?"]},{"n":72,"page":171,"parts":[{"p":97,"t":"072 练习","d":"05:06"}],"hw":[{"k":"wb","t":"绿皮书 第72课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"aired the room","ipa":"","note":""},{"w":"listened to the stereo","ipa":"","note":""},{"w":"shaved","ipa":"","note":""},{"w":"telephoned","ipa":"","note":""},{"w":"called the doctor","ipa":"","note":""},{"w":"emptied the basket","ipa":"","note":""},{"w":"boiled an egg","ipa":"","note":""},{"w":"cleaned our shoes","ipa":"","note":""},{"w":"played","ipa":"","note":""},{"w":"stayed in bed","ipa":"","note":""}],"examples":["What did you do yesterday?","Did you air the room yesterday?","When did you air the room?","What did she do last night?","She listened to the stereo last night.","Did she listen to the stereo last night?"]},{"n":73,"page":172,"parts":[{"p":98,"t":"073 语法 单词","d":"21:42"},{"p":99,"t":"073 语法 文章","d":"10:52"}],"hw":[{"k":"wb","t":"绿皮书 第73课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心语法+知识点"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"总结 v. 不规则的过去式"}],"words":[{"w":"week","ipa":"/wiːk/","note":""},{"w":"weekday weekend","ipa":"","note":""},{"w":"hand","ipa":"/hænd/","note":""},{"w":"London","ipa":"/ˈlʌndən/","note":""},{"w":"go to London","ipa":"","note":""},{"w":"bus stop suddenly","ipa":"/ˈsʌdənli/","note":""},{"w":"pocket","ipa":"/ˈpɒkɪt/","note":""},{"w":"in the pocket","ipa":"","note":""},{"w":"slowly","ipa":"/ˈsləʊli/","note":""},{"w":"walk slowly","ipa":"","note":""}],"examples":["They go to school everyday.","I went to school yesterday too.","Did you go to school yesterday?","When did you go to school?","You called me last week.","Did you call me last week?"]},{"n":74,"page":176,"parts":[{"p":100,"t":"074 单词 语法","d":"09:58"}],"hw":[{"k":"wb","t":"绿皮书 第74课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句","word":"本课单词","n":null},{"k":"extra","t":"v. 过去式总结"}],"words":[{"w":"hurriedly","ipa":"/ˈhʌridli/","note":""},{"w":"leave-left","ipa":"","note":""},{"w":"gave drank","ipa":"/ɡeɪv//dræŋk/","note":""},{"w":"met  greeted","ipa":"/met/","note":""},{"w":"thirstily","ipa":"/ˈθɜːstəli/","note":""},{"w":"shaved","ipa":"","note":""},{"w":"took ate","ipa":"/tʊk//eɪt/","note":""},{"w":"went  slowly","ipa":"","note":""},{"w":"enjoyed","ipa":"","note":""},{"w":"swam","ipa":"/swæm/","note":""}],"examples":["He shaved hurriedly.","He left the house hurriedly.","Be careful. Don't cut yourself.","Can you cut it for me?","I cut myself yesterday morning.","What did you give him?"]},{"n":75,"page":177,"parts":[{"p":101,"t":"075 单词 文章","d":"17:01"}],"hw":[{"k":"wb","t":"绿皮书 第75课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"ago","ipa":"/əˈɡəʊ/","note":""},{"w":"N years ago","ipa":"","note":""},{"w":"N months ago","ipa":"","note":""},{"w":"N days ago","ipa":"","note":""},{"w":"N hours ago","ipa":"","note":""},{"w":"N minutes ago","ipa":"","note":""},{"w":"N seconds ago","ipa":"","note":""},{"w":"fashion","ipa":"/ˈfæʃən/","note":""},{"w":"in fashion","ipa":"","note":""},{"w":"out of fashion","ipa":"","note":""},{"w":"uncomfortable","ipa":"/ʌnˈkʌmftəbəl/","note":""},{"w":"pair","ipa":"/peə/","note":""}],"examples":["I met your mom 30 years ago.","I went to Beijing 3 days ago.","My dad bought this TV for us 2 months ago.","She bought her boyfriend a watch.","This is in fashion.","Is this out of fashion?"]},{"n":76,"page":180,"parts":[{"p":102,"t":"076 练习","d":"04:04"}],"hw":[{"k":"wb","t":"绿皮书 第76课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"looked at that photograph","ipa":"","note":""},{"w":"watched television","ipa":"","note":""},{"w":"painted that bookcase","ipa":"","note":""},{"w":"jumped off the wall","ipa":"","note":""},{"w":"worked in an office","ipa":"","note":""},{"w":"dusted the cupboard","ipa":"","note":""},{"w":"thanked her father","ipa":"","note":""},{"w":"typed those letters","ipa":"","note":""},{"w":"walked across the park","ipa":"","note":""}],"examples":["When did you look at that photograph?","When did they watch television?","Every day last week.","When did he paint that bookcase?","The year before last.","When did the cat jump off the wall?"]},{"n":77,"page":181,"parts":[{"p":103,"t":"077 单词 文章","d":"17:14"}],"hw":[{"k":"wb","t":"绿皮书 第77课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"appointment","ipa":"/əˈpɔɪntmənt/","note":""},{"w":"have an appointment","ipa":"","note":""},{"w":"urgent","ipa":"/ˈɜːdʒənt/","note":""},{"w":"Urgent Care","ipa":"","note":""},{"w":"Walk in","ipa":"","note":""},{"w":"No appointment needed","ipa":"","note":""},{"w":"till","ipa":"/tɪl/","note":""},{"w":"saw","ipa":"","note":""},{"w":"went","ipa":"","note":""},{"w":"bought","ipa":"","note":""},{"w":"painted","ipa":"","note":""},{"w":"met","ipa":"","note":""},{"w":"arrived","ipa":"","note":""}],"examples":["It's eight o'clock. When did you see him?","Half an hour ago.","It's Friday.","When did she go to London?","The day before yesterday.","She went to London on Wednesday."]},{"n":78,"page":184,"parts":[{"p":104,"t":"078 练习","d":"05:17"}],"hw":[{"k":"wb","t":"绿皮书 第78课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"给自己讲解一遍今天的核心知识点（建议）"}],"words":[{"w":"lost","ipa":"","note":""},{"w":"called","ipa":"","note":""},{"w":"bought","ipa":"","note":""},{"w":"spoke","ipa":"","note":""}],"examples":["It's Sunday.","When did he lose his pen?","Yesterday.","He lost it on Saturday.","It's March.","When did you call the doctor?"]},{"n":79,"page":185,"parts":[{"p":105,"t":"079 单词 语法","d":"22:09"},{"p":106,"t":"079 文章","d":"08:54"}],"hw":[{"k":"wb","t":"绿皮书 第79课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词+语法造句*3","word":"单词+语法","n":3},{"k":"extra","t":"初级红皮书查找本课语法"}],"words":[{"w":"have got","ipa":"","note":"肯定句:"},{"w":"a lot of","ipa":"","note":"既可修饰cn. 也可修饰un. 肯定句/否/疑问"},{"w":"much","ipa":"","note":"much + un. (否/疑)"},{"w":"many","ipa":"","note":""},{"w":"shopping  list","ipa":"/ˈʃɒpɪŋ//lɪst/","note":""},{"w":"make a shopping list","ipa":"","note":""},{"w":"vegetable","ipa":"/ˈvedʒtəbəl/","note":""},{"w":"need","ipa":"/niːd/","note":""},{"w":"money","ipa":"/ˈmʌni/","note":""},{"w":"groceries","ipa":"/ˈɡrəʊsəriz/","note":""},{"w":"fruit","ipa":"/fruːt/","note":""},{"w":"newsagent","ipa":"/ˈnjuːzeɪdʒənt/","note":""},{"w":"chemist","ipa":"/ˈkemɪst/","note":""},{"w":"stationery","ipa":"/ˈsteɪʃənəri/","note":""},{"w":"glue","ipa":"","note":""},{"w":"envelop","ipa":"","note":""}],"examples":["I have a car.","I have got a car.","He has a car.","He has got a car. He's got...","I don't have a car.","I haven't got a car."]},{"n":80,"page":189,"parts":[{"p":107,"t":"080 单词 练习","d":"07:41"}],"hw":[{"k":"wb","t":"绿皮书 第80课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[],"examples":["Have you got any?","Has he got any?","He needs a lot of envelopes.","He hasn't got many.","Have they got any?","They need a lot of bread."]},{"n":81,"page":190,"parts":[{"p":108,"t":"081 单词 语法","d":"14:33"},{"p":109,"t":"081 文章","d":"09:47"}],"hw":[{"k":"wb","t":"绿皮书 第81课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"explain","t":"请给自己讲解一遍今天的 核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3}],"words":[{"w":"bath","ipa":"/bɑːθ/","note":""},{"w":"have a bath","ipa":"","note":""},{"w":"ready nearly","ipa":"/ˈredi//ˈnɪəli/","note":""},{"w":"restaurant","ipa":"/ˈrestərɒnt/","note":""},{"w":"go to a restaurant","ipa":"","note":""},{"w":"roast","ipa":"/rəʊst/","note":""},{"w":"roast beef","ipa":"","note":""},{"w":"dinner","ipa":"/ˈdɪnə/","note":""},{"w":"have dinner","ipa":"","note":"have 吃喝玩乐"}],"examples":["Did you have a bath?","I had a bath 2 hours ago.","She is having a bath.","I'm gonna have a bath tonight.","Are you ready?","I'm nearly ready."]},{"n":82,"page":194,"parts":[{"p":110,"t":"082 单词 练习","d":"08:12"}],"hw":[{"k":"wb","t":"绿皮书 第82课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"extra","t":"总结大结构"}],"words":[{"w":"breakfast","ipa":"/ˈbrekfəst/","note":""},{"w":"have breakfast","ipa":"","note":""},{"w":"haircut","ipa":"/ˈheəkʌt/","note":""},{"w":"have a haircut","ipa":"","note":""},{"w":"holiday","ipa":"/ˈhɒlədeɪ/","note":""},{"w":"have a holiday","ipa":"","note":""},{"w":"party","ipa":"/ˈpɑːti/","note":""},{"w":"have a party","ipa":"","note":""},{"w":"have lunch","ipa":"","note":""},{"w":"have tea","ipa":"","note":""},{"w":"have dinner","ipa":"","note":""},{"w":"have a meal","ipa":"","note":""},{"w":"have a lesson","ipa":"","note":""},{"w":"have a good time","ipa":"","note":""},{"w":"can","ipa":"","note":"时态+情态动词复习"},{"w":"must","ipa":"","note":"时态+情态动词复习"}],"examples":["What are they going to do?","They are going to have breakfast.","What are they doing?","They are having lunch.","What must they do?","They must have tea."]},{"n":83,"page":195,"parts":[{"p":111,"t":"083 单词 语法","d":"25:01"},{"p":112,"t":"083 文章","d":"11:08"}],"hw":[{"k":"wb","t":"绿皮书 第83课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"红皮书 have + done"}],"words":[{"w":"mess","ipa":"/mes/","note":""},{"w":"untidy","ipa":"","note":""},{"w":"pack","ipa":"/pæk/","note":""},{"w":"pack my bag","ipa":"","note":""},{"w":"suitcase","ipa":"/ˈsuːtkeɪs/","note":""}],"examples":["He's already left.","He's gonna leave. Just talk to him.","Are you going to leave soon?","I have had lunch.","I am having lunch.","I have not had lunch."]},{"n":84,"page":198,"parts":[{"p":113,"t":"084 练习","d":"03:18"}],"hw":[{"k":"wb","t":"绿皮书 第84课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"vegetables fruit","ipa":"","note":""},{"w":"beans peas","ipa":"","note":""},{"w":"coffee tea","ipa":"","note":""},{"w":"apples peaches","ipa":"","note":""},{"w":"cabbage lettuce","ipa":"","note":""},{"w":"chicken steak","ipa":"","note":""}],"examples":["Have you had any vegetables?","Do you want to have some fruit?","Has he had any beans?","He hasn't had any beans.","Does he want to have some peas?","He's just had some peas."]},{"n":85,"page":199,"parts":[{"p":114,"t":"085 单词","d":"08:09"},{"p":115,"t":"085 语法 文章","d":"13:42"}],"hw":[{"k":"wb","t":"绿皮书 第85课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"红皮书查 have been/gone to"}],"words":[{"w":"Paris","ipa":"/ˈpærɪs/","note":""},{"w":"go to Paris","ipa":"","note":""},{"w":"live in Paris","ipa":"","note":""},{"w":"go to a cinema","ipa":"","note":""},{"w":"see a film","ipa":"","note":""},{"w":"beautiful","ipa":"/ˈbjuːtɪfəl/","note":""},{"w":"city","ipa":"/ˈsɪti/","note":""},{"w":"gone","ipa":"","note":""}],"examples":["I lived in Paris three years ago.","I went to Paris five years ago.","When did you go to Paris?","Did you go to a cinema last night?","I saw a film with my girlfriend yesterday.","When did you see a film with your girlfriend?"]},{"n":86,"page":202,"parts":[{"p":116,"t":"086 练习","d":"04:46"}],"hw":[{"k":"wb","t":"绿皮书 第86课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"aired the room","ipa":"","note":""},{"w":"cleaned their shoes","ipa":"","note":""},{"w":"opened the window","ipa":"","note":""},{"w":"sharpened his pencil","ipa":"","note":""},{"w":"turned on the television","ipa":"","note":""},{"w":"listened to the news","ipa":"","note":""},{"w":"boiled some milk","ipa":"","note":""},{"w":"answered the telephone","ipa":"","note":""},{"w":"emptied the basket","ipa":"","note":""},{"w":"asked a question","ipa":"","note":""},{"w":"typed a letter","ipa":"","note":""},{"w":"washed her hands","ipa":"","note":""},{"w":"walked across the park","ipa":"","note":""},{"w":"painted the bookcase","ipa":"","note":""},{"w":"dusted the cupboard","ipa":"","note":""}],"examples":["It's cold.","What has she just done?","She has just aired the room.","What have they just done?","They have just cleaned their shoes.","What has he just done?"]},{"n":87,"page":203,"parts":[{"p":117,"t":"087 单词","d":"12:27"},{"p":118,"t":"087 文章","d":"14:37"}],"hw":[{"k":"wb","t":"绿皮书 第87课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的 核心知识点"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3}],"words":[{"w":"crash","ipa":"/kræʃ/","note":""},{"w":"have a crash","ipa":"","note":""},{"w":"lamp-post","ipa":"/ˈlæmp//pəʊst/","note":""},{"w":"garage","ipa":"/ˈɡærɑːʒ/","note":""},{"w":"aired the room","ipa":"","note":""},{"w":"cleaned your shoes","ipa":"","note":""},{"w":"sharpened your pencil","ipa":"","note":""},{"w":"typed those letters","ipa":"","note":""},{"w":"washed the dishes","ipa":"","note":""},{"w":"dusted the dressing table","ipa":"","note":""},{"w":"painted the bookcase","ipa":"","note":""},{"w":"packed your suitcase","ipa":"","note":""},{"w":"shaved","ipa":"","note":""},{"w":"buy bought bought","ipa":"","note":""},{"w":"find found found","ipa":"","note":""},{"w":"get got got","ipa":"","note":""}],"examples":["Have you aired the room yet?","Have you cleaned your shoes yet?","Have you sharpened your pencil yet?","Have you typed those letters yet?","Have you washed the dishes yet?","Have you dusted the dressing table yet?"]},{"n":88,"page":207,"parts":[{"p":119,"t":"088 练习","d":"05:44"}],"hw":[{"k":"wb","t":"绿皮书 第88课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"buy-bought-bought","ipa":"","note":""},{"w":"find-found-found","ipa":"","note":""},{"w":"have-had-had","ipa":"","note":""},{"w":"leave-left-left","ipa":"","note":""},{"w":"hear-heard-heard","ipa":"","note":""},{"w":"make-made-made","ipa":"","note":""},{"w":"meet-met-met","ipa":"","note":""}],"examples":["Did you buy a new car last year?","Yes, I bought a new car last year.","What about Sam?","He hasn't bought a new car yet.","Did you find your pen yesterday?","Yes, I found my pen yesterday."]},{"n":89,"page":208,"parts":[{"p":120,"t":"089 单词 语法","d":"24:15"},{"p":121,"t":"089 文章","d":"09:52"}],"hw":[{"k":"wb","t":"绿皮书 第89课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"红皮书 have + done 用法二"}],"words":[{"w":"may","ipa":"/meɪ/","note":"have done 现在完成时"},{"w":"believe","ipa":"/bɪˈliːv/","note":""},{"w":"why because","ipa":"/waɪ//bɪˈkəz/","note":"because +句子"},{"w":"retire","ipa":"/rɪˈtaɪə/","note":""},{"w":"cost","ipa":"/kɒst/","note":"单词造句*3"},{"w":"for sale","ipa":"","note":""},{"w":"worth every penny","ipa":"/wɜːθ/","note":""}],"examples":["Have you lived in Beijing for 10 years?","How long have you lived in Beijing?","I have been here for 2 hours.","I studied English before.","I have studied English for ten years.","I lived here."]},{"n":90,"page":213,"parts":[{"p":122,"t":"090 练习","d":"05:06"}],"hw":[{"k":"wb","t":"绿皮书 第90课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"extra","t":"查找红皮书have+done用法二"}],"words":[{"w":"read this book","ipa":"","note":""},{"w":"do sb's homework","ipa":"","note":""},{"w":"swim across the river","ipa":"","note":""},{"w":"go to London","ipa":"","note":""},{"w":"see that film","ipa":"","note":""},{"w":"speak to the boss","ipa":"","note":""},{"w":"put on sb's coat","ipa":"","note":""}],"examples":["Did you read this book last week?","Yes, I read this book last week.","What about Penny?","She hasn't read this book yet.","Did you do your homework last night?","Yes, I did my homework last night."]},{"n":91,"page":214,"parts":[{"p":123,"t":"091 单词","d":"11:56"},{"p":124,"t":"091 文章","d":"09:36"}],"hw":[{"k":"wb","t":"绿皮书 第91课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3}],"words":[{"w":"will do","ipa":"","note":"否定 will+not=won't"},{"w":"still","ipa":"/stɪl/","note":""},{"w":"move","ipa":"/muːv/","note":""},{"w":"neighbour neighbor","ipa":"/ˈneɪbə/","note":""},{"w":"miss","ipa":"/mɪs/","note":""},{"w":"poor","ipa":"/pɔː/","note":""}],"examples":["Look at these poor people. Let's help them.","Oh, that poor guy.","He's still here.","Is he still here?","Why is he still here?","He is going to move tomorrow."]},{"n":92,"page":218,"parts":[{"p":125,"t":"092 练习","d":"03:40"}],"hw":[{"k":"wb","t":"绿皮书 第92课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"rain","ipa":"","note":""},{"w":"get up","ipa":"","note":""},{"w":"sweep","ipa":"","note":""},{"w":"snow","ipa":"","note":""},{"w":"finish","ipa":"","note":""},{"w":"repair","ipa":"","note":""},{"w":"telephone","ipa":"","note":""},{"w":"drive","ipa":"","note":""},{"w":"shave","ipa":"","note":""},{"w":"make an appointment","ipa":"","note":""}],"examples":["It rained yesterday.","Yes, and it'll rain again tomorrow.","He got up late yesterday.","She swept the floor yesterday.","It snowed yesterday.","Yes, and it'll snow again tomorrow."]},{"n":93,"page":219,"parts":[{"p":126,"t":"093 语法 单词 文章","d":"14:17"}],"hw":[{"k":"wb","t":"绿皮书 第93课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"pilot","ipa":"/ˈpaɪlət/","note":""},{"w":"return ticket","ipa":"","note":""},{"w":"Tokyo","ipa":"/ˈtəʊkiəʊ/","note":""},{"w":"Madrid","ipa":"/məˈdrɪd/","note":""},{"w":"New York","ipa":"/njuː//jɔːk/","note":""},{"w":"Athens","ipa":"/ˈæθənz/","note":""},{"w":"Berlin","ipa":"/bɜːˈlɪn/","note":""},{"w":"Geneva","ipa":"/dʒɪˈniːvə/","note":""},{"w":"London","ipa":"","note":""},{"w":"Bombay","ipa":"/bɔm'bei/","note":""}],"examples":["What's your husband's job?","He is a pilot.","He will return to Beijing next week.","Will he return to Beijing next week?","When will he return to Beijing?","I'll fly to Tokyo next month."]},{"n":94,"page":222,"parts":[{"p":127,"t":"094 单词 练习","d":"06:24"}],"hw":[{"k":"wb","t":"绿皮书 第94课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"Moscow","ipa":"/ˈmɒskəʊ/","note":""},{"w":"New York","ipa":"","note":""},{"w":"Paris","ipa":"/ˈpærɪs/","note":""},{"w":"Rome","ipa":"/rəʊm/","note":""}],"examples":["He will arrive from Madrid.","No, they won't stay in New York next month.","They will stay in Moscow.","Will you fly to Paris tomorrow?","No, I shan't fly to Paris tomorrow.","I shall fly to New York."]},{"n":95,"page":223,"parts":[{"p":128,"t":"095 单词 语法","d":"18:56"},{"p":129,"t":"095 文章","d":"10:41"}],"hw":[{"k":"wb","t":"绿皮书 第95课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3}],"words":[{"w":"station  platform","ipa":"/ˈsteɪʃən//ˈplætfɔːm/","note":"含义:"},{"w":"had better","ipa":"","note":"含义:"},{"w":"sleep","ipa":"","note":""},{"w":"return the money","ipa":"","note":""},{"w":"see a doctor","ipa":"","note":""},{"w":"drink some water","ipa":"","note":""},{"w":"do that","ipa":"","note":""},{"w":"follow me","ipa":"","note":""},{"w":"eat the ice cream","ipa":"","note":""},{"w":"return","ipa":"/rɪˈtɜːn/","note":""},{"w":"return tickets","ipa":"","note":""},{"w":"train","ipa":"/treɪn/","note":""},{"w":"plenty","ipa":"/ˈplenti/","note":""},{"w":"bar","ipa":"/bɑː/","note":""},{"w":"porter","ipa":"/ˈpɔːtə/","note":"哔哩哔哩 胶囊助学计划"},{"w":"miss","ipa":"/mɪs/","note":""}],"examples":["What about you?","Tom flew to Stockholm two weeks ago.","What about Penny?","She will fly to Stockholm in two weeks' time.","Alice flew to Rome two days ago.","Tom and Mary went to London an hour ago."]},{"n":96,"page":226,"parts":[{"p":130,"t":"096 练习","d":"04:56"}],"hw":[{"k":"wb","t":"绿皮书 第96课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"Tokyo","ipa":"/ˈtəʊkiəʊ/","note":""},{"w":"Sydney","ipa":"/ˈsɪdni/","note":""},{"w":"Geneva","ipa":"/dʒəˈniːvə/","note":""},{"w":"Berlin","ipa":"/bɜːˈlɪn/","note":""},{"w":"New York","ipa":"","note":""},{"w":"Paris","ipa":"/ˈpærɪs/","note":""}],"examples":["What about you and Jean?","We shall return to Tokyo in two days' time.","You went to Sydney a month ago.","What about me?","You will go to Sydney in a month's time.","What about the next train?"]},{"n":97,"page":227,"parts":[{"p":131,"t":"097 单词","d":"07:43"},{"p":132,"t":"097 语法 文章","d":"12:06"}],"hw":[{"k":"wb","t":"绿皮书 第97课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"leave  left  left","ipa":"/liːv//left/","note":""},{"w":"describe","ipa":"/dɪˈskraɪb/","note":""},{"w":"address","ipa":"/əˈdres/","note":"文章跟读至熟读成诵"},{"w":"zip","ipa":"/zɪp/","note":""},{"w":"label","ipa":"/ˈleɪbəl/","note":""},{"w":"belong","ipa":"/bɪˈlɒŋ/","note":""},{"w":"I me my mine","ipa":"","note":""},{"w":"she her her hers","ipa":"","note":""},{"w":"he him his his","ipa":"","note":""},{"w":"we us our ours","ipa":"","note":""},{"w":"they them their theirs","ipa":"","note":""},{"w":"you you your yours","ipa":"","note":""}],"examples":["This cat belongs to me.","Does this cat belong to you?","Is this your cat?","I left my bag upstairs.","I'll get it for you.","Did you leave your bag upstairs?"]},{"n":98,"page":230,"parts":[{"p":133,"t":"098 练习","d":"03:39"}],"hw":[{"k":"wb","t":"绿皮书 第98课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"keys","ipa":"","note":""},{"w":"letter","ipa":"","note":""},{"w":"clothes","ipa":"","note":""},{"w":"passport","ipa":"","note":""},{"w":"watch","ipa":"","note":""},{"w":"flowers","ipa":"","note":""},{"w":"boat","ipa":"","note":""},{"w":"phrase book","ipa":"","note":""},{"w":"hammers","ipa":"","note":""},{"w":"car","ipa":"","note":""},{"w":"pens","ipa":"","note":""}],"examples":["Are these your keys?","Yes, they're mine.","They belong to me.","Is this John's letter?","Yes, it's his. It belongs to him.","Are these my clothes?"]},{"n":99,"page":231,"parts":[{"p":134,"t":"099 单词 语法","d":"20:32"},{"p":135,"t":"099 文章","d":"09:20"}],"hw":[{"k":"wb","t":"绿皮书 第99课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"完成宾语从句的两个练习活动"}],"words":[{"w":"stand up","ipa":"","note":""},{"w":"ow","ipa":"/aʊ/","note":""},{"w":"slip","ipa":"/slɪp/","note":""},{"w":"sit down","ipa":"","note":""},{"w":"help","ipa":"/help/","note":""},{"w":"at once","ipa":"","note":""},{"w":"X-ray","ipa":"/ˈeks//reɪ/","note":""}],"examples":["I think that you are right.","He believes that they will help him.","I hope that the food is safe here.","She says that she will help you.","We understand that we mustn't talk in the library.","I know that he is 29."]},{"n":100,"page":234,"parts":[{"p":136,"t":"100 练习","d":"03:58"}],"hw":[{"k":"wb","t":"绿皮书 第100课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"tired","ipa":"","note":""},{"w":"headache","ipa":"","note":""},{"w":"money","ipa":"","note":""},{"w":"cold","ipa":"","note":""},{"w":"toothache","ipa":"","note":""},{"w":"X-ray","ipa":"","note":""},{"w":"car","ipa":"","note":""},{"w":"bus","ipa":"","note":""},{"w":"thirsty","ipa":"","note":""}],"examples":["What's that?","He says that he feels tired.","She says that she's got a headache.","We want some money.","She says that she is cold.","We have toothache."]},{"n":101,"page":235,"parts":[{"p":137,"t":"101 语法 单词","d":"15:27"},{"p":138,"t":"101 文章","d":"14:03"}],"hw":[{"k":"wb","t":"绿皮书 第101课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3}],"words":[{"w":"Scotland","ipa":"/ˈskɒtlənd/","note":""},{"w":"England","ipa":"","note":""},{"w":"card","ipa":"/kɑːd/","note":""},{"w":"postcard","ipa":"","note":""},{"w":"business card","ipa":"","note":""},{"w":"ID card","ipa":"","note":""},{"w":"youth hostel association","ipa":"/ j u ː θ //ˈhɒstəl//əsəʊsiˈeɪʃən/","note":""},{"w":"YHA","ipa":"","note":""},{"w":"soon","ipa":"/suːn/","note":""},{"w":"write wrote written","ipa":"/raɪt//rəʊt//ˈrɪtən/","note":""}],"examples":["The doctor says that he will come at once.","He says that he can do it .","Leo says that he has just arrived in Scotland.","He says that he feels tired.","They say that they will win the game.","He says that he must wait for his friends."]},{"n":102,"page":239,"parts":[{"p":139,"t":"102 练习","d":"03:28"}],"hw":[{"k":"wb","t":"绿皮书 第102课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"cold","ipa":"","note":""},{"w":"have a cold","ipa":"","note":""},{"w":"licence","ipa":"","note":""},{"w":"sell this house","ipa":"","note":""},{"w":"have an earache","ipa":"","note":""},{"w":"want a haircut","ipa":"","note":""},{"w":"repair this car","ipa":"","note":""},{"w":"headache","ipa":"","note":""},{"w":"money","ipa":"","note":""}],"examples":["What's that?","She says she is cold.","He says he has a cold.","She says she needs a licence.","He says he will sell this house.","He says he has an earache."]},{"n":103,"page":240,"parts":[{"p":140,"t":"103 语法 单词","d":"17:53"},{"p":141,"t":"103 文章","d":"10:34"}],"hw":[{"k":"wb","t":"绿皮书 第103课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找 too enough"}],"words":[{"w":"enough  too","ipa":"/ɪˈnʌf/","note":""},{"w":"pass the exam","ipa":"","note":""},{"w":"fail","ipa":"/feɪl/","note":""},{"w":"fail the exam","ipa":"","note":""},{"w":"paper","ipa":"/ˈpeɪpə/","note":""},{"w":"answer my question","ipa":"","note":""},{"w":"hate","ipa":"/heɪt/","note":""},{"w":"guy","ipa":"/ɡaɪ/","note":""},{"w":"top","ipa":"/tɒp/","note":""}],"examples":["This is big enough.","I passed the exam.","Did you pass the exam?","How did you pass the exam?","Why didn't you pass the exam?","He failed the exam."]},{"n":104,"page":244,"parts":[{"p":142,"t":"104 单词 练习","d":"12:57"}],"hw":[{"k":"wb","t":"绿皮书 第104课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"cheap expensive","ipa":"/tʃiːp//ɪkˈspensɪv/","note":""},{"w":"clever stupid","ipa":"/ˈklevə//ˈstjuːpɪd/","note":""},{"w":"high  low","ipa":"/haɪ/","note":""},{"w":"hard  soft","ipa":"/hɑːd//sɒft/","note":""},{"w":"fresh stale","ipa":"/freʃ//steɪl/","note":""},{"w":"loud low","ipa":"/laʊd/","note":""},{"w":"sweet  sour","ipa":"/swiːt//saʊə/","note":""},{"w":"answer all the questions","ipa":"","note":""},{"w":"hear the stereo","ipa":"","note":""},{"w":"eat the orange","ipa":"","note":""},{"w":"buy the car","ipa":"","note":""},{"w":"climb the wall","ipa":"","note":""}],"examples":["Could he answer all the questions?","Yes, he could.","No, he couldn't.","Could they hear the stereo?","Yes, they could.","It was loud enough for them to hear."]},{"n":105,"page":246,"parts":[{"p":143,"t":"105 单词 语法","d":"15:49"},{"p":144,"t":"105 文章","d":"07:55"}],"hw":[{"k":"wb","t":"绿皮书 第105课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3}],"words":[{"w":"dictionary","ipa":"/ˈdɪkʃənəri/","note":"2 选用大结构"},{"w":"be doing","ipa":"","note":""},{"w":"be going to do can","ipa":"","note":""},{"w":"must","ipa":"","note":"3 四句型转换"},{"w":"did","ipa":"","note":"3 四句型转换"},{"w":"will","ipa":"","note":"3 四句型转换"},{"w":"have done","ipa":"","note":"3 四句型转换"},{"w":"spell spelt spelt","ipa":"/spel//spelt/","note":""},{"w":"intelligent","ipa":"/ɪnˈtelɪdʒənt/","note":""},{"w":"present","ipa":"/ˈprezənt/","note":""},{"w":"mistake","ipa":"/mɪˈsteɪk/","note":""},{"w":"make a mistake","ipa":"","note":"哔哩哔哩 胶囊助学计划"}],"examples":["I want to buy a new car.","Do you want to buy a new car?","Why do you want to buy a new car?","Please tell him to bring me some coffee.","Can you spell that for me?","How do you spell “Leo”?"]},{"n":106,"page":250,"parts":[{"p":145,"t":"106 单词 练习","d":"07:57"}],"hw":[{"k":"wb","t":"绿皮书 第106课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"carry","ipa":"/ˈkæri/","note":""},{"w":"correct","ipa":"/kəˈrekt/","note":""},{"w":"correct the mistake","ipa":"","note":""},{"w":"suitcase","ipa":"","note":""},{"w":"photograph","ipa":"","note":""},{"w":"knife","ipa":"","note":""},{"w":"policeman","ipa":"","note":""},{"w":"be careful","ipa":"","note":""},{"w":"hurt himself","ipa":"","note":""},{"w":"describe","ipa":"","note":""},{"w":"new car","ipa":"","note":""}],"examples":["Because she wants him to carry it.","Why is he giving her his photograph?","Because he wants her to keep it.","Because he wants them to move it.","Why is she talking to the little boy?","Because he wants him to describe it."]},{"n":107,"page":251,"parts":[{"p":146,"t":"107 单词 语法","d":"23:02"},{"p":147,"t":"107 文章","d":"11:30"}],"hw":[{"k":"wb","t":"绿皮书 第107课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找形容词比较级&最高级"},{"k":"extra","t":"初级红皮书查找 would like"}],"words":[{"w":"seen","ipa":"","note":""},{"w":"madam","ipa":"/ˈmædəm/","note":""},{"w":"suit","ipa":"/suːt/","note":""}],"examples":["Would you like some tea?","Would you like to help him?"]},{"n":108,"page":255,"parts":[{"p":148,"t":"108 练习","d":"05:12"}],"hw":[{"k":"wb","t":"绿皮书 第108课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"tall-taller-tallest","ipa":"","note":""},{"w":"short-shorter-shortest","ipa":"","note":""},{"w":"cheap-cheaper-cheapest","ipa":"","note":""},{"w":"sharp-sharper-sharpest","ipa":"","note":""},{"w":"pretty-prettier-prettiest","ipa":"","note":""},{"w":"lazy-lazier-laziest","ipa":"","note":""},{"w":"big-bigger-biggest","ipa":"","note":""},{"w":"easy-easier-easiest","ipa":"","note":""},{"w":"blunt-blunter-bluntest","ipa":"","note":""},{"w":"thin-thinner-thinnest","ipa":"","note":""}],"examples":["This policeman is tall.","But that one is taller.","This woman is short.","But that one is shorter.","These cars are cheap.","But those cars are cheaper."]},{"n":109,"page":256,"parts":[{"p":149,"t":"109 单词 语法","d":"14:52"},{"p":150,"t":"109 文章","d":"09:32"}],"hw":[{"k":"wb","t":"绿皮书 第109课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找 a little a few little few"}],"words":[{"w":"little few","ipa":"","note":"a little + un. 肯定含义"},{"w":"idea","ipa":"/aɪˈdɪə/","note":""},{"w":"teaspoonful","ipa":"/ˈtiːspuːnfʊl/","note":""},{"w":"instead","ipa":"/ɪnˈsted/","note":""},{"w":"advice","ipa":"/ədˈvaɪs/","note":""},{"w":"pity","ipa":"/ˈpɪti/","note":"It's a pity (that) + 句子"}],"examples":["There is a little milk in the fridge.","There is little milk in the fridge.","There are a few apples in the fridge.","There are few apples in the fridge."]},{"n":110,"page":260,"parts":[{"p":151,"t":"110 练习","d":"03:13"}],"hw":[{"k":"wb","t":"绿皮书 第110课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"coffee","ipa":"","note":""},{"w":"books","ipa":"","note":""},{"w":"meat","ipa":"","note":""},{"w":"money","ipa":"","note":""},{"w":"vegetables","ipa":"","note":""},{"w":"biscuits","ipa":"","note":""},{"w":"chocolate","ipa":"","note":""},{"w":"presents","ipa":"","note":""},{"w":"ink","ipa":"","note":""}],"examples":[]},{"n":111,"page":261,"parts":[{"p":152,"t":"111 单词 语法","d":"23:16"},{"p":153,"t":"111 文章","d":"09:06"}],"hw":[{"k":"wb","t":"绿皮书 第111课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书 as...as"}],"words":[{"w":"beautiful","ipa":"","note":""},{"w":"more beautiful","ipa":"","note":""},{"w":"the most beautiful","ipa":"","note":""},{"w":"less beautiful","ipa":"","note":""},{"w":"the least beautiful","ipa":"","note":""},{"w":"expensive","ipa":"","note":""},{"w":"less expensive","ipa":"","note":""},{"w":"the least expensive","ipa":"","note":""},{"w":"interesting","ipa":"","note":""},{"w":"less","ipa":"","note":""},{"w":"the least","ipa":"","note":""},{"w":"model","ipa":"/ˈmɒdəl/","note":""},{"w":"afford","ipa":"/əˈfɔːd/","note":""},{"w":"instalment","ipa":"/ɪnˈstɑːlmənt/","note":""},{"w":"price","ipa":"/praɪs/","note":"单词造句*3"},{"w":"deposit","ipa":"/dɪˈpɒzɪt/","note":""}],"examples":["No, it isn't.","Is the man shorter than the woman?","No, he isn't.","The man is as short as the woman."]},{"n":112,"page":265,"parts":[{"p":154,"t":"112 练习","d":"05:03"}],"hw":[{"k":"wb","t":"绿皮书 第112课的写作练习"},{"k":"read","t":"本视频听力口语练习反复跟读"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"handbag","ipa":"","note":""},{"w":"policeman  policewoman","ipa":"","note":""},{"w":"woman","ipa":"","note":""},{"w":"boy girl","ipa":"","note":""},{"w":"case","ipa":"","note":""},{"w":"knife","ipa":"","note":""}],"examples":["No, it isn't.","No, he isn't.","No, she isn't.","Is the boy older than the girl?","The boy is as old as the girl."]},{"n":113,"page":266,"parts":[{"p":155,"t":"113 单词 语法","d":"11:53"},{"p":156,"t":"113 语法 文章","d":"13:52"}],"hw":[{"k":"wb","t":"绿皮书 第113课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的 核心知识点"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找语法"},{"k":"extra","t":"初级红皮书查找 So Neither"}],"words":[{"w":"conductor","ipa":"/kənˈdʌktə/","note":""},{"w":"fare","ipa":"/feə/","note":""},{"w":"passenger","ipa":"/ˈpæsəndʒə/","note":""},{"w":"get off","ipa":"","note":""},{"w":"change","ipa":"/tʃeɪndʒ/","note":""},{"w":"note","ipa":"","note":""},{"w":"except","ipa":"/ɪkˈsept/","note":"肯定: so+助动词/情态动词/be+主语"},{"w":"so neither","ipa":"","note":"肯定: so+助动词/情态动词/be+主语"}],"examples":["Can we help that tramp?","We can give him some food.","This tramp is older than your dad.","I didn't see any cars in the street.","I saw no cars in the street.","I haven't got any time."]},{"n":114,"page":271,"parts":[{"p":157,"t":"114 练习","d":"03:20"}],"hw":[{"k":"wb","t":"绿皮书 第114课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"extra","t":"初级红皮书查 So Neither"}],"words":[{"w":"hungry","ipa":"","note":""},{"w":"tired","ipa":"","note":""},{"w":"coffee","ipa":"","note":""},{"w":"tea","ipa":"","note":""},{"w":"party","ipa":"","note":""},{"w":"swim","ipa":"","note":""},{"w":"speak Chinese","ipa":"","note":""},{"w":"saw George","ipa":"","note":""},{"w":"a new car","ipa":"","note":""},{"w":"cold","ipa":"","note":""},{"w":"headache","ipa":"","note":""}],"examples":["So am I.","Neither am I.","So do I.","Neither do I.","So was I.","Neither was I."]},{"n":115,"page":272,"parts":[{"p":158,"t":"115 单词 语法","d":"14:31"},{"p":159,"t":"115 文章","d":"11:46"}],"hw":[{"k":"wb","t":"绿皮书 第115课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心语法+知识点"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找本课语法"}],"words":[{"w":"every no any some","ipa":"","note":""},{"w":"everythingnothing","ipa":"/ˈnʌθɪŋ/","note":""},{"w":"anything something","ipa":"","note":""},{"w":"knock","ipa":"/nɒk/","note":""},{"w":"quiet","ipa":"/ˈkwaɪət/","note":""},{"w":"invite","ipa":"/ɪnˈvaɪt/","note":""},{"w":"lemonade","ipa":"/leməˈneɪd/","note":""},{"w":"impossible","ipa":"/ɪmˈpɒsəbəl/","note":""},{"w":"joke","ipa":"/dʒəʊk/","note":"哔哩哔哩 胶囊助学计划"}],"examples":["She is joking.","Is she joking?","You can't joke about this.","Someone is knocking at the door.","Who is knocking at the door?","Did you knock at the door?"]},{"n":116,"page":276,"parts":[{"p":160,"t":"116 练习","d":"04:54"}],"hw":[{"k":"wb","t":"绿皮书 第116课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"extra","t":"初级红皮书查找语法"}],"words":[{"w":"asleep","ipa":"/əˈsliːp/","note":""},{"w":"glasses","ipa":"/ˈɡlæsiz/","note":""},{"w":"see","ipa":"","note":""},{"w":"hear","ipa":"","note":""},{"w":"speak","ipa":"","note":""},{"w":"go","ipa":"","note":""},{"w":"buy","ipa":"","note":""},{"w":"write","ipa":"","note":""},{"w":"meet","ipa":"","note":""},{"w":"tell","ipa":"","note":""}],"examples":["Did you see anyone yesterday?","No, I saw no one.","Did you hear anything?","No, I heard nothing.","Did anyone speak to you?","No, no one spoke to me."]},{"n":117,"page":277,"parts":[{"p":161,"t":"117 单词 语法","d":"20:50"},{"p":162,"t":"117 文章","d":"12:40"}],"hw":[{"k":"wb","t":"绿皮书 第117课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找重点语法"}],"words":[{"w":"dining room","ipa":"/ˈdaɪnɪŋ/","note":""},{"w":"coin","ipa":"/kɔɪn/","note":""},{"w":"toilet","ipa":"/ˈtɔɪlɪt/","note":""}],"examples":["I was doing my homework at 8 o'clock last night.","We were swimming in the river, at 4 o'clock, yesterday afternoon.","Were you swimming...?","What were you doing?","He was cooking a meal at 10 o'clock.","He was cooking a meal when he was listening to music."]},{"n":118,"page":280,"parts":[{"p":163,"t":"118 练习","d":"04:20"}],"hw":[{"k":"wb","t":"绿皮书 第118课的写作练习"},{"k":"read","t":"反复跟读本课听力口语练习"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"having a bath","ipa":"","note":""},{"w":"washing the dishes","ipa":"","note":""},{"w":"making the bed","ipa":"","note":""},{"w":"telephoning my sister","ipa":"","note":""},{"w":"reading","ipa":"","note":""},{"w":"making tea","ipa":"","note":""},{"w":"listening to the stereo","ipa":"","note":""},{"w":"working in the garden","ipa":"","note":""},{"w":"cleaning her shoes","ipa":"","note":""},{"w":"doing his homework","ipa":"","note":""}],"examples":["What were you doing when he arrived?","She was washing the dishes.","She was making the bed.","He was working in the garden.","She was cleaning her shoes.","He was doing his homework."]},{"n":119,"page":281,"parts":[{"p":164,"t":"119 单词 语法","d":"22:03"},{"p":165,"t":"119 文章","d":"10:02"}],"hw":[{"k":"wb","t":"绿皮书 第119课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的 核心知识点"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查过去完成时"}],"words":[{"w":"story","ipa":"/ˈstɔːri/","note":""},{"w":"tell a story","ipa":"","note":""},{"w":"thief-thieves","ipa":"/θiːf/","note":""},{"w":"enter","ipa":"/ˈentə/","note":""},{"w":"dark","ipa":"/dɑːk/","note":""},{"w":"torch","ipa":"/tɔːtʃ/","note":""},{"w":"voice","ipa":"/vɔɪs/","note":""},{"w":"hear a voice","ipa":"","note":""},{"w":"parrot","ipa":"/ˈpærət/","note":""}],"examples":["It's dark outside. Be careful.","This room is darker than that one.","This is the darkest night I've ever seen.","It's dark enough to see the stars in the sky."]},{"n":120,"page":285,"parts":[{"p":166,"t":"120 练习","d":"04:47"}],"hw":[{"k":"wb","t":"绿皮书 第120课的写作练习"},{"k":"read","t":"反复跟读本视频中例句"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[],"examples":["Did you read the book?","Yes, but I saw the film first.","Did you go to the doctor?","Yes, but I made an appointment first.","Did the boss leave the office?","Yes, but he finished his work first."]},{"n":121,"page":286,"parts":[{"p":167,"t":"121 单词","d":"07:29"},{"p":168,"t":"121 123 语法","d":"30:48"},{"p":169,"t":"121 文章","d":"10:24"}],"hw":[{"k":"wb","t":"绿皮书 第121课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找定语从句"}],"words":[{"w":"customer","ipa":"/ˈkʌstəmə/","note":""},{"w":"Customer Services","ipa":"","note":""},{"w":"forget - forgot - forgotten","ipa":"","note":""},{"w":"serve","ipa":"/sɜːv/","note":""},{"w":"counter","ipa":"/ˈkaʊntə/","note":""},{"w":"manager","ipa":"/ˈmænɪdʒə/","note":""},{"w":"recognize","ipa":"/ˈrekəɡnaɪz/","note":"定语从句"},{"w":"Sweet apple","ipa":"","note":"⻩的香蕉 Yellow banana"},{"w":"The bread on the table","ipa":"","note":"我旁边的家伙"},{"w":"The guy next to me","ipa":"","note":"单词在前,短语在后"}],"examples":["I can recognize him.","Can you recognize him?","The customer is always right.","Oh, No. I forgot to take my pills.","I forgot to take an umbrella with me.","I forgot to cook dinner for him."]},{"n":122,"page":291,"parts":[{"p":170,"t":"122 单词 练习","d":"06:28"}],"hw":[{"k":"wb","t":"绿皮书 第122课的写作练习"},{"k":"read","t":"反复跟读本视频例句"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"mechanic","ipa":"","note":""},{"w":"thieves","ipa":"","note":""},{"w":"car","ipa":"","note":""},{"w":"children","ipa":"","note":""},{"w":"porter","ipa":"","note":""},{"w":"windows","ipa":"","note":""},{"w":"Children","ipa":"","note":""},{"w":"coin","ipa":"","note":""},{"w":"woman","ipa":"","note":""},{"w":"books","ipa":"","note":""},{"w":"people","ipa":"","note":""}],"examples":["Isn't he the mechanic?","Didn't he repair your car?","Aren't they the thieves?","Didn't the police catch them?","Isn't that the car?","Didn't you sell it last year?"]},{"n":123,"page":292,"parts":[{"p":168,"t":"121 123 语法","d":"30:48"},{"p":171,"t":"123 文章","d":"13:04"},{"p":172,"t":"123 单词","d":"07:51"}],"hw":[{"k":"wb","t":"绿皮书 第123课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3}],"words":[{"w":"during  trip","ipa":"/ˈdʒʊərɪŋ//trɪp/","note":""},{"w":"travel","ipa":"/ˈtrævəl/","note":""},{"w":"offer","ipa":"","note":"单词造句*3"}],"examples":["I grew a beard during my trip.","I grow some vegetables every summer.","I met him during my trip to New York.","We didn't speak during the meal.","Why didn't you speak during the meal?","I travelled with my girlfriend last summer."]},{"n":124,"page":296,"parts":[{"p":173,"t":"124 单词 练习","d":"04:47"}],"hw":[{"k":"wb","t":"绿皮书 第124课的写作练习"},{"k":"read","t":"反复跟读本视频联系"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"kitten","ipa":"/ˈkɪtən/","note":""},{"w":"test","ipa":"","note":""},{"w":"person","ipa":"","note":""},{"w":"girl","ipa":"","note":""},{"w":"photographs","ipa":"","note":""},{"w":"actors","ipa":"","note":"反复跟读本视频联系"},{"w":"ship","ipa":"","note":""},{"w":"city","ipa":"","note":""},{"w":"shop","ipa":"","note":""},{"w":"chair","ipa":"","note":""}],"examples":["Isn't this the test?","Didn't you speak to me about it?","Isn't that the person?","Didn't you speak to him?","Yes, that's the person I spoke to.","Isn't she the girl?"]},{"n":125,"page":297,"parts":[{"p":174,"t":"125 单词 语法","d":"20:38"},{"p":175,"t":"125 文章","d":"12:01"}],"hw":[{"k":"wb","t":"绿皮书 第125课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找本课语法"}],"words":[{"w":"have to","ipa":"","note":""},{"w":"have to VS must","ipa":"","note":"must 必须"},{"w":"water","ipa":"/ˈwɔːtə/","note":""},{"w":"mean - meant - meant","ipa":"","note":""},{"w":"surprise","ipa":"/səˈpraɪz/","note":""},{"w":"nuisance","ipa":"/ˈnjuːsəns/","note":""}],"examples":["She has to work from 9 to 5.","She doesn't have work from 9 to 5.","Does she have to work from 9 to 5?","They have to go to New York.","They don't have to go to New York.","Do they have to go to New York?"]},{"n":126,"page":302,"parts":[{"p":176,"t":"126 单词 练习","d":"04:55"}],"hw":[{"k":"wb","t":"绿皮书 第126课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"immediately","ipa":"/ɪˈmiːdiətli/","note":""},{"w":"leave","ipa":"","note":""},{"w":"get up early","ipa":"","note":""},{"w":"change some money","ipa":"","note":""},{"w":"drive to London","ipa":"","note":""},{"w":"go by air","ipa":"","note":"文章跟读至熟读成诵"},{"w":"meet her at the station","ipa":"","note":""},{"w":"be there early","ipa":"","note":""},{"w":"decide immediately","ipa":"","note":""},{"w":"take a taxi","ipa":"","note":""},{"w":"catch that bus","ipa":"","note":""}],"examples":["Tom must change some money.","She has to change some money, too.","Tom doesn't have to be there early.","Alan must decide immediately.","He has to decide immediately, too."]},{"n":127,"page":303,"parts":[{"p":177,"t":"127 语法 单词","d":"17:22"},{"p":178,"t":"127 文章","d":"10:32"}],"hw":[{"k":"wb","t":"绿皮书 第127课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找语法"}],"words":[{"w":"must be doing","ipa":"","note":"can't 表推测"},{"w":"can't be doing","ipa":"","note":""},{"w":"in class","ipa":"","note":""},{"w":"restaurant","ipa":"","note":""},{"w":"dancer","ipa":"","note":""},{"w":"knock at the door","ipa":"","note":""},{"w":"ill","ipa":"","note":""},{"w":"sleeping","ipa":"","note":""},{"w":"have lunch","ipa":"","note":"must 必须 & 一定"},{"w":"actor","ipa":"/ˈæktə/","note":""},{"w":"read - read - read","ipa":"","note":"单词造句*3"},{"w":"Marsh","ipa":"","note":""}],"examples":["Why isn't John in class?","He must be sick.","He can't be late.","That restaurant must be very good.","That restaurant can't be very good.","She can't be a doctor."]},{"n":128,"page":307,"parts":[{"p":179,"t":"128 练习","d":"03:53"}],"hw":[{"k":"wb","t":"绿皮书 第128课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"extra","t":"初级红皮书查找本课语法"}],"words":[],"examples":["Is he a doctor or a dentist?","He can't be a doctor.","He must be a dentist.","Is she Danish or Norwegian?","She can't be Danish.","She must be Norwegian."]},{"n":129,"page":308,"parts":[{"p":180,"t":"129 单词 语法","d":"21:56"},{"p":181,"t":"129 文章","d":"10:30"}],"hw":[{"k":"wb","t":"绿皮书 第129课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找语法"}],"words":[{"w":"must have done","ipa":"","note":""},{"w":"must have been doing","ipa":"","note":"must can't 表推测"},{"w":"can't have done","ipa":"","note":""},{"w":"can't have been doing","ipa":"","note":""},{"w":"must have been","ipa":"","note":""},{"w":"can't have been","ipa":"","note":""},{"w":"wave","ipa":"/weɪv/","note":""},{"w":"dream","ipa":"/driːm/","note":""},{"w":"sign","ipa":"/saɪn/","note":""},{"w":"mile","ipa":"/maɪl/","note":""},{"w":"speed limit","ipa":"/spiːd//ˈlɪmɪt/","note":""},{"w":"driving  license","ipa":"/ˈlaɪsəns/","note":""},{"w":"charge","ipa":"/tʃɑːdʒ/","note":""}],"examples":["He can't have been 30.","He must have been 22.","He must have been at school.","He can't have been at the restaurant.","The phone rang but I didn't hear it.","You can't have been on the bus."]},{"n":130,"page":313,"parts":[{"p":182,"t":"130 练习","d":"03:33"}],"hw":[{"k":"wb","t":"绿皮书 第130课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"extra","t":"初级红皮书查找本课语法"}],"words":[{"w":"bus driver","ipa":"","note":""},{"w":"Japanese","ipa":"","note":""},{"w":"watching television","ipa":"","note":""},{"w":"American","ipa":"","note":""},{"w":"blunt","ipa":"","note":""},{"w":"sweeping the floor","ipa":"","note":""},{"w":"youngest","ipa":"","note":""},{"w":"engineers","ipa":"","note":""}],"examples":["Was he a conductor or a bus driver?","He can't have been a conductor.","He must have been a bus driver.","Was she Chinese or Japanese?","She can't have been Chinese.","She must have been Japanese."]},{"n":131,"page":314,"parts":[{"p":183,"t":"131 单词 语法","d":"13:28"},{"p":184,"t":"131 文章","d":"09:51"}],"hw":[{"k":"wb","t":"绿皮书 第131课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找本课语法"}],"words":[{"w":"may be","ipa":"","note":""},{"w":"may be doing","ipa":"","note":""},{"w":"Egypt","ipa":"/ˈiːdʒɪpt/","note":""},{"w":"abroad","ipa":"/əˈbrɔːd/","note":""},{"w":"worry","ipa":"/ˈwʌri/","note":""}],"examples":["Where is she from?","She may be from China.","She may be from Korea.","She may be from Japan.","She must be from Japan.","She is from Japan."]},{"n":132,"page":319,"parts":[{"p":185,"t":"132 练习","d":"03:15"}],"hw":[{"k":"wb","t":"绿皮书 第132课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"may be","ipa":"","note":""},{"w":"may have been","ipa":"","note":""}],"examples":["Do you think he's in his room?","Do you think they were reading?","Do you think they were in the garden?","Do you think this bread is fresh ?","Do you think she was Danish?","Do you think he was repairing the car?"]},{"n":133,"page":320,"parts":[{"p":186,"t":"133 单词 语法","d":"10:32"},{"p":187,"t":"133 文章","d":"07:32"}],"hw":[{"k":"wb","t":"绿皮书第133课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3}],"words":[{"w":"tired","ipa":"","note":""},{"w":"interesting","ipa":"","note":"参考回顾:L99/101"},{"w":"dinner","ipa":"","note":""},{"w":"working","ipa":"","note":"参考回顾:L99/101"},{"w":"lost my key","ipa":"","note":""},{"w":"sleep","ipa":"","note":""},{"w":"reporter","ipa":"/rɪˈpɔːtə/","note":""},{"w":"sensational","ipa":"/senˈseɪʃənəl/","note":""},{"w":"mink coat","ipa":"/mɪŋk/","note":""}],"examples":["What did he say?","He said that he was tired.","The book is interesting.","What did she say?","She said that the book was interesting.","We are having dinner."]},{"n":134,"page":326,"parts":[{"p":188,"t":"134 练习","d":"03:12"}],"hw":[{"k":"wb","t":"绿皮书 第134课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"tired","ipa":"","note":""},{"w":"reading","ipa":"","note":""},{"w":"leave","ipa":"","note":""},{"w":"cinema","ipa":"","note":""},{"w":"expensive","ipa":"","note":""},{"w":"waiting","ipa":"","note":""},{"w":"urgent","ipa":"","note":""},{"w":"joking","ipa":"","note":""},{"w":"hungry","ipa":"","note":""}],"examples":["What did he say?","He said he was tired.","What did she tell you?","She told me she was reading.","He said he wanted to leave.","It's expensive."]},{"n":135,"page":327,"parts":[{"p":189,"t":"135 单词 语法","d":"09:57"},{"p":190,"t":"135 文章","d":"08:24"}],"hw":[{"k":"wb","t":"绿皮书第135课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找本课语法"}],"words":[{"w":"recognize","ipa":"","note":""},{"w":"supermarket","ipa":"","note":""},{"w":"arrive","ipa":"","note":"直接引语 间接引语"},{"w":"can could","ipa":"","note":"哔哩哔哩 胶囊助学计划"},{"w":"will would","ipa":"","note":"哔哩哔哩 胶囊助学计划"},{"w":"may might","ipa":"","note":"哔哩哔哩 胶囊助学计划"},{"w":"future","ipa":"/ˈfjuːtʃə/","note":""},{"w":"get married","ipa":"","note":""},{"w":"latest","ipa":"/ˈleɪtɪst/","note":""},{"w":"introduce","ipa":"/ɪntrəˈdjuːs/","note":""},{"w":"hotel","ipa":"/həʊˈtel/","note":""}],"examples":["What did he say?","He said that he could recognize him.","What did she tell you?","They may arrive tomorrow.","He said that they might arrive tomorrow."]},{"n":136,"page":331,"parts":[{"p":191,"t":"136 练习","d":"03:11"}],"hw":[{"k":"wb","t":"绿皮书 第136课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"leave","ipa":"","note":""},{"w":"understand","ipa":"","note":""},{"w":"cinema","ipa":"","note":""},{"w":"come","ipa":"","note":""},{"w":"travel","ipa":"","note":""},{"w":"afford","ipa":"","note":""},{"w":"retire","ipa":"","note":""},{"w":"rain","ipa":"","note":""},{"w":"right","ipa":"","note":""}],"examples":["What did he say?","He said he would leave tomorrow.","What did she tell you?","George won't travel by air.","He said he might not retire.","It will rain tomorrow."]},{"n":137,"page":332,"parts":[{"p":192,"t":"137 单词 语法","d":"14:21"},{"p":193,"t":"137 文章","d":"09:43"}],"hw":[{"k":"wb","t":"绿皮书 第137课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找本课语法"}],"words":[{"w":"football","ipa":"/ˈfʊtbɔːl/","note":""},{"w":"pool","ipa":"/puːl/","note":""},{"w":"swimming pool","ipa":"","note":""},{"w":"world","ipa":"/wɜːld/","note":""},{"w":"travel round the world","ipa":"","note":""},{"w":"in the world","ipa":"","note":""},{"w":"poor","ipa":"/pɔː/","note":""},{"w":"rich poor","ipa":"","note":"单词造句*3"},{"w":"win - won - won","ipa":"","note":""},{"w":"depend","ipa":"/dɪˈpend/","note":""},{"w":"depend on","ipa":"","note":""}],"examples":["I won the game.","Did you win the game?","How did you win the game?","Who won the game?","After they had won the game, they went to a bar.","If you cook dinner, I will wash the dishes."]},{"n":138,"page":336,"parts":[{"p":194,"t":"138 练习","d":"03:46"}],"hw":[{"k":"wb","t":"绿皮书 第138课的写作练习"},{"k":"read","t":"反复跟读本视频练习"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"money","ipa":"","note":""},{"w":"miss the bus","ipa":"","note":""},{"w":"sell his old car","ipa":"","note":""},{"w":"letter","ipa":"","note":""},{"w":"come home","ipa":"","note":""},{"w":"ill","ipa":"","note":""},{"w":"go to the party","ipa":"","note":""},{"w":"ask","ipa":"","note":""},{"w":"rain","ipa":"","note":""}],"examples":["Stay at the best hotels.","Take a taxi.","He won't buy a new one.","Work less.","Type it himself.","Play in the garden."]},{"n":139,"page":337,"parts":[{"p":195,"t":"139 单词 语法","d":"24:11"},{"p":196,"t":"139 文章","d":"09:55"}],"hw":[{"k":"wb","t":"绿皮书 第139课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找本课语法"}],"words":[{"w":"repair the telephone line","ipa":"","note":""},{"w":"extra","ipa":"/ˈekstrə/","note":""},{"w":"overseas","ipa":"/əʊvəˈsiːz/","note":""},{"w":"go overseas","ipa":"","note":""},{"w":"engineering  company","ipa":"/endʒɪˈnɪərɪŋ//ˈkʌmpəni/","note":""},{"w":"line","ipa":"/laɪn/","note":"单词造句*3"}],"examples":["Is she a nurse?","Do you want an apple?","Is he ill?","Is he going to study English?","Does she often go shopping?","Who is she?"]},{"n":140,"page":341,"parts":[{"p":197,"t":"140 练习","d":"03:41"}],"hw":[{"k":"wb","t":"绿皮书 第140课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"tired","ipa":"","note":""},{"w":"late","ipa":"","note":""},{"w":"get up","ipa":"","note":""},{"w":"cooking","ipa":"","note":""},{"w":"arrive","ipa":"","note":""},{"w":"go to bed early","ipa":"","note":""},{"w":"have a bath","ipa":"","note":""},{"w":"go to bed","ipa":"","note":""}],"examples":["Are you tired?","What does he want to know?","He wants to know if you are tired.","Why is Mary late?","What does she want to know?","She wants to know why Mary is late."]},{"n":141,"page":342,"parts":[{"p":198,"t":"141+142","d":"43:47"}],"hw":[{"k":"wb","t":"绿皮书 第141课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找本课语法"}],"words":[{"w":"excited","ipa":"/ɪkˈsaɪtɪd/","note":""},{"w":"get on","ipa":"","note":""},{"w":"ugly","ipa":"/ˈʌɡli/","note":""},{"w":"middle-aged","ipa":"","note":""},{"w":"opposite","ipa":"/ˈɒpəzɪt/","note":""},{"w":"curiously","ipa":"/ˈkjʊəriəsli/","note":""},{"w":"funny","ipa":"/ˈfʌni/","note":""},{"w":"amused","ipa":"/əˈmjuːzd/","note":""},{"w":"embarrassed","ipa":"/ɪmˈbærəst/","note":""},{"w":"clean the room","ipa":"","note":""},{"w":"sell stamps","ipa":"","note":""},{"w":"repair the car","ipa":"","note":"结构:"},{"w":"kill the tiger","ipa":"","note":""},{"w":"steal my wallet","ipa":"","note":""},{"w":"book the room","ipa":"","note":"结构:"}],"examples":["Someone cleans the room everyday.","Someone sells stamps in a post office.","The stamps are sold in a post office.","Someone repairs the car regularly.","The car is repaired regularly.","Wusong killed the tiger."]},{"n":142,"page":347,"parts":[{"p":198,"t":"141+142","d":"43:47"}],"hw":[{"k":"wb","t":"绿皮书 第142课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"extra","t":"初级红皮书查找本课语法"}],"words":[{"w":"open this window","ipa":"","note":""},{"w":"take him to school","ipa":"","note":""},{"w":"repair that car","ipa":"","note":""},{"w":"air this room","ipa":"","note":""},{"w":"correct these exercise books","ipa":"","note":""},{"w":"invite him to a party","ipa":"","note":""},{"w":"meet them at the station","ipa":"","note":""},{"w":"sharpen this knife","ipa":"","note":""},{"w":"sharpen these knives","ipa":"","note":""}],"examples":["Does anyone ever open this window?","Yes, it is opened regularly.","Does anyone ever take him to school?","Yes, he is taken to school regularly.","Did anyone ever repair that car?","Yes, it was repaired regularly."]},{"n":143,"page":348,"parts":[{"p":199,"t":"143+144","d":"36:32"}],"hw":[{"k":"wb","t":"绿皮书 第143课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"},{"k":"make","t":"单词造句*3","word":"本课单词","n":3},{"k":"extra","t":"初级红皮书查找本课语法"}],"words":[{"w":"paint the door","ipa":"","note":""},{"w":"steal my key","ipa":"","note":""},{"w":"invite me to dinner","ipa":"","note":"被动"},{"w":"empty the basket","ipa":"","note":""},{"w":"sharpen the knives","ipa":"","note":""},{"w":"water the flower","ipa":"","note":"被动"},{"w":"A be surrounded by B","ipa":"","note":""},{"w":"beauty spot","ipa":"/ˈbjuːti//spɒt/","note":""},{"w":"through","ipa":"/θruː/","note":""},{"w":"visitor","ipa":"/ˈvɪzɪtə/","note":""},{"w":"count","ipa":"/kaʊnt/","note":""},{"w":"cover","ipa":"/ˈkʌvə/","note":""},{"w":"A be covered with B","ipa":"","note":"单词造句*3"},{"w":"keep the room tidy","ipa":"","note":""},{"w":"litter","ipa":"/ˈlɪtə/","note":""},{"w":"litter basket","ipa":"","note":""}],"examples":["Someone has painted the door.","The door has been painted.","Somebody has stolen my key.","My key has been stolen.","Nobody has invited me to dinner.","The basket hasn't been emptied yet."]},{"n":144,"page":353,"parts":[{"p":199,"t":"143+144","d":"36:32"}],"hw":[{"k":"wb","t":"绿皮书 第144课的写作练习"},{"k":"read","t":"文章跟读至熟读成诵（建议）"},{"k":"explain","t":"请给自己讲解一遍今天的核心知识点"}],"words":[{"w":"opened the window","ipa":"","note":""},{"w":"sweep the floor","ipa":"","note":""},{"w":"tell them about it","ipa":"","note":""},{"w":"invite them","ipa":"","note":""},{"w":"serve","ipa":"","note":""},{"w":"repair this car","ipa":"","note":""},{"w":"find","ipa":"","note":""},{"w":"sharpen this knife","ipa":"","note":""},{"w":"sharpen these knives","ipa":"","note":""}],"examples":["Has anyone opened the window yet?","Yes, it has already been opened.","Will anyone sweep the floor?","Yes, it'll be swept soon.","Will anyone tell them about it?","Yes, they'll be told about it soon."]}],"total":144};
+const BV = "BV1xa411J7jJ";
+const RECITE_URL = "https://nce.ichochy.com/";
+const KEY = "nce1_pwa_v1";
+const GIST_TOKEN_KEY = "nce1_gist_token";
+const GIST_ID_KEY = "nce1_gist_id";
+const GIST_LAST_KEY = "nce1_gist_last";
+const GIST_BACKUP_KEY = "nce1_backup";
+const GIST_FILE = "nce1-progress.json";
+const LESSONS = DATA.lessons;
+const TOTAL = DATA.total;
+
+/* ---------- 状态 ---------- */
+const CATS = [
+  {k:"video", t:"跟课视频", c:"#1b4a86"},
+  {k:"hw",    t:"课后作业", c:"#2f74b5"},
+  {k:"make",  t:"造句练习", c:"#69a3d8"},
+  {k:"read",  t:"跟读背诵", c:"#9dc3e6"},
+  {k:"none",  t:"未分类",   c:"#c8d4e2"}
+];
+function dayKey(d){ d = d || new Date(); const p = n => String(n).padStart(2,"0");
+  return d.getFullYear() + "-" + p(d.getMonth()+1) + "-" + p(d.getDate()); }
+function thisYearEnd(){ return new Date().getFullYear() + "-12-31"; }
+function defaultState(){
+  const s = {done:{}, marks:{}, secs:{}, days:{}, seg:{}, tasks:{}, make:{}, lastN:41, lastCat:"video", goal:thisYearEnd(), start:40, updatedAt:""};
+  for (let i = 1; i <= 40; i++) s.done[i] = 1;   // 用户当前进度：已完成 1–40 课
+  return s;
+}
+function load(){
+  try{ const raw = localStorage.getItem(KEY); if(!raw) return defaultState();
+    const s = JSON.parse(raw);
+    return Object.assign(defaultState(), s);
+  }catch(e){ return defaultState(); }
+}
+let S = load();
+function save(){ try{ S.updatedAt = new Date().toISOString(); localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ---------- 工具 ---------- */
+const $ = id => document.getElementById(id);
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function fmt(sec){ sec = Math.max(0, Math.floor(sec||0)); const h = Math.floor(sec/3600), m = Math.floor(sec%3600/60), s = sec%60;
+  return (h>0 ? String(h).padStart(2,"0")+":" : "") + String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0"); }
+function fmtLong(sec){ sec = Math.floor(sec||0); const h = Math.floor(sec/3600), m = Math.round(sec%3600/60);
+  if (h>0) return h + " 小时 " + (m? m+" 分":"");
+  if (m>0) return m + " 分钟";
+  return sec>0 ? sec + " 秒" : "0 分钟"; }
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove("show"), 1800); }
+function doneCount(){ return Object.keys(S.done).length; }
+function weekStart(){ const d = new Date(); const w = (d.getDay()+6)%7; d.setDate(d.getDate()-w); d.setHours(0,0,0,0); return d; }
+function weekDone(){ const ws = weekStart(); let c = 0;
+  for (const k in S.marks){ const d = new Date(S.marks[k] + "T00:00:00"); if (d >= ws) c++; }
+  return c; }
+function dayDone(){ const t = dayKey(); let c = 0; for (const k in S.marks) if (S.marks[k] === t) c++; return c; }
+function totalSecs(){ let t = 0; for (const k in S.secs) t += S.secs[k]||0; return t; }
+function nextLesson(){ for (let i = 1; i <= TOTAL; i++) if (!S.done[i]) return i; return TOTAL; }
+
+function goalInfo(){
+  const done = doneCount(), remaining = Math.max(0, TOTAL - done);
+  const now = new Date(); const g = new Date(S.goal + "T23:59:59");
+  const daysLeft = Math.max(0, Math.ceil((g - now) / 86400000));
+  const weeks = daysLeft > 0 ? daysLeft / 7 : 0.2;
+  const perWeek = remaining ? Math.ceil(remaining / weeks) : 0;
+  const perDay = remaining && daysLeft > 0 ? Math.ceil(remaining / daysLeft) : remaining;
+  const wDone = weekDone();
+  return { done, remaining, daysLeft, perWeek, perDay, wDone, wStill: Math.max(0, perWeek - wDone) };
+}
+
+/* ---------- 计时器 ---------- */
+let T = { n:null, on:false, base:0, startAt:0, committed:0, cat:"video" };
+let tickHandle = null;
+function elapsed(){ return T.base + (T.on ? (Date.now() - T.startAt)/1000 : 0); }
+function addSeg(n, cat, delta){
+  if (!delta || !n) return;
+  S.seg = S.seg || {}; S.seg[n] = S.seg[n] || {};
+  S.seg[n][cat] = (S.seg[n][cat]||0) + delta;
+}
+function commitTimer(){
+  if (!T.n) return;
+  const e = Math.round(elapsed());
+  const before = Math.round(T.committed);
+  S.secs[T.n] = e;
+  const d = dayKey();
+  const delta = Math.max(0, e - before);
+  if (delta) addSeg(T.n, T.cat || "video", delta);
+  S.days[d] = (S.days[d]||0) + delta;
+  T.committed = e;
+  T.base = e; T.startAt = Date.now();
+  if (T.on) S.run = {n: T.n, cat: T.cat || "video", start: T.startAt};
+  save();
+}
+function startTimer(n){
+  if (T.on) pauseTimer();
+  T.n = n; T.base = S.secs[n]||0; T.on = true; T.startAt = Date.now(); T.committed = T.base;
+  T.cat = S.lastCat || "video";
+  S.run = {n: T.n, cat: T.cat, start: T.startAt};
+  if (!tickHandle) tickHandle = setInterval(onTick, 1000);
+  onTick(); renderTimer(); save();
+}
+/* 切换「当前在做哪一步」，前面已经跑的时间记到原环节，不丢 */
+function setCat(c){
+  if (!CATS.some(x => x.k === c)) return;
+  if (T.on && T.n) commitTimer();
+  T.cat = c; S.lastCat = c;
+  if (T.on && S.run) S.run.cat = c;
+  save(); render();
+}
+function pauseTimer(silent){
+  if (!T.on) return;
+  commitTimer(); T.on = false;
+  delete S.run;
+  if (!silent){ renderTimer(); }
+  save();
+}
+function toggleTimer(n){ if (T.on && T.n === n) pauseTimer(); else startTimer(n); }
+function onTick(){
+  if (!T.on) return;
+  const tv = $("timer"); if (tv) tv.textContent = fmt(elapsed());
+  const mt = $("metaTime"); if (mt) mt.innerHTML = metaTimeHTML(T.n);
+  const sg = $("segline"); if (sg && T.n) sg.innerHTML = segLine(T.n);
+  const st = $("btnTimer"); if (st) st.textContent = "暂停计时";
+  if (Date.now() - T.startAt > 10000) commitTimer();
+}
+function metaTimeHTML(n){
+  return "本课累计 <b>" + fmtLong(S.secs[n]||0) + "</b> · 今日 <b>" + fmtLong(S.days[dayKey()]||0) + "</b>";
+}
+/* 环节拆分：本课 / 全站 */
+function segOf(n){
+  const o = (S.seg && S.seg[n]) || {};
+  const r = {}; CATS.forEach(c => { if (c.k !== "none") r[c.k] = o[c.k] || 0; });
+  return r;
+}
+function segLine(n){
+  const o = segOf(n); let parts = [];
+  CATS.forEach(c => { if (c.k !== "none" && o[c.k] > 0) parts.push(c.t + " <b>" + fmtLong(o[c.k]) + "</b>"); });
+  if (!parts.length) return "";
+  return "本课分环节：" + parts.join(" · ");
+}
+function segTotals(){
+  const r = {video:0, hw:0, make:0, read:0}; let classified = 0;
+  if (S.seg) for (const n in S.seg){
+    const o = S.seg[n] || {};
+    for (const k in r){ const v = o[k] || 0; r[k] += v; classified += v; }
+  }
+  const total = totalSecs();
+  const none = Math.max(0, total - classified);
+  return {cats: r, none, total: Math.max(total, classified)};
+}
+function pieHTML(){
+  const st = segTotals();
+  const rows = [];
+  CATS.forEach(c => { const v = c.k === "none" ? st.none : st.cats[c.k]; if (v > 0) rows.push({t: c.t, c: c.c, v: v}); });
+  if (!rows.length) return '<div class="empty">还没有分环节的计时。到课程页点「开始计时」，并选一下当时在做哪一步（看视频 / 作业 / 造句 / 跟读），这里就会出饼图。</div>';
+  rows.sort((a, b) => b.v - a.v);
+  const sum = rows.reduce((s, r) => s + r.v, 0);
+  const R = 72, SW = 26, C = 2 * Math.PI * R;
+  let off = 0;
+  const arcs = rows.map(r => {
+    const len = Math.max(0.6, r.v / sum * C);
+    const s = `<circle cx="100" cy="100" r="${R}" fill="none" stroke="${r.c}" stroke-width="${SW}"
+      stroke-dasharray="${len.toFixed(2)} ${(C - len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}"
+      transform="rotate(-90 100 100)"/>`;
+    off += len;
+    return s;
+  }).join("");
+  const hrs = st.total >= 3600 ? (st.total / 3600).toFixed(1) : "";
+  const centerTop = hrs || String(Math.round(st.total / 60));
+  const centerBot = hrs ? "小时" : "分钟";
+  const leg = rows.map(r => {
+    const pc = Math.round(r.v / sum * 100);
+    return `<div class="row"><span class="dot" style="background:${r.c}"></span><span class="nm">${r.t}</span>
+      <span class="tm">${fmtLong(r.v)}</span><span class="pc">${pc}%</span></div>`;
+  }).join("");
+  const top = rows[0];
+  const topPc = Math.round(top.v / sum * 100);
+  const onlyNone = rows.length === 1 && top.t === "未分类";
+  const note = onlyNone
+    ? "这些时长是「分环节统计」上线之前记的，暂时只能算在一起。下次开始计时时点一下当时在做哪一步，就能分开统计。"
+    : `最费时间的是 <b>${top.t}</b>，占 <b>${topPc}%</b>。` + (st.none > 0 ? "「未分类」是加上分环节统计之前的老计时记录，不影响总数。" : "");
+  return `
+  <div class="pieWrap">
+    <svg viewBox="0 0 200 200" width="176" height="176" role="img" aria-label="各环节用时占比">
+      <circle cx="100" cy="100" r="${R}" fill="none" stroke="#e6eef8" stroke-width="${SW}"/>
+      ${arcs}
+      <text x="100" y="96" text-anchor="middle" font-size="26" font-family="Georgia,serif" fill="#152a45">${centerTop}</text>
+      <text x="100" y="116" text-anchor="middle" font-size="12" fill="#61758c">${centerBot}</text>
+    </svg>
+    <div class="pieLeg">${leg}</div>
+  </div>
+  <div class="note-box" style="margin-top:10px">${note}</div>`;
+}
+/* 离开页面不停止计时：切后台/切标签/手机回桌面都按真实时间继续累计 */
+const RUN_GAP_MAX = 12 * 3600 * 1000;   // 超过 12 小时视为忘了关，按最后一次记录截止
+document.addEventListener("visibilitychange", ()=>{
+  if (!T.on) return;
+  if (document.hidden){ commitTimer(); return; }   // 存盘，继续跑
+  const gap = Date.now() - T.startAt;
+  if (gap > RUN_GAP_MAX){
+    T.base = S.secs[T.n] || 0; T.startAt = Date.now(); T.committed = T.base;
+    if (S.run) delete S.run;
+    save(); toast("离开超过 12 小时，已按最后记录截止");
+  }
+  renderTimer();
+});
+function restoreRun(){
+  const r = S.run;
+  if (!r || typeof r !== "object") return;
+  const n = +r.n;
+  if (!(n >= 1 && n <= TOTAL) || !r.start) { delete S.run; return; }
+  const gap = Date.now() - r.start;
+  if (gap > RUN_GAP_MAX || gap < 0){ delete S.run; save(); return; }
+  T.n = n; T.cat = CATS.some(c => c.k === r.cat) ? r.cat : "video";
+  T.base = S.secs[n] || 0; T.startAt = r.start; T.committed = T.base; T.on = true;
+  if (!tickHandle) tickHandle = setInterval(onTick, 1000);
+  toast("继续上次的计时：第 " + n + " 课");
+}
+
+/* ---------- 视图 ---------- */
+let filter = "all";
+
+function renderTimer(){
+  if (T.on && !document.getElementById("timer")) return;
+  const v = location.hash || "#/home";
+  const m = v.match(/^#\/lesson\/(\d+)/);
+  if (m){ const n = +m[1];
+    if (T.on && T.n !== n) startTimer(n); // 保持同一课计时
+    const tv = $("timer"); if (tv) tv.textContent = fmt(elapsed());
+    const mt = $("metaTime"); if (mt) mt.innerHTML = metaTimeHTML(n);
+    const btn = $("btnTimer"); if (btn) btn.textContent = (T.on && T.n === n) ? "暂停计时" : "开始计时";
+  }
+}
+
+function go(h){ if (T.on) pauseTimer(true); location.hash = h; }
+function render(){
+  const h = location.hash || "#/home";
+  const m = h.match(/^#\/lesson\/(\d+)/);
+  const app = $("app");
+  if (m) app.innerHTML = viewLesson(Math.min(TOTAL, Math.max(1, +m[1])));
+  else if (h.startsWith("#/stats")) app.innerHTML = viewStats();
+  else app.innerHTML = viewHome();
+  if (T.on) renderTimer();
+}
+
+/* ---------- 首页 ---------- */
+function viewHome(){
+  const g = goalInfo();
+  const pct = Math.round(g.done / TOTAL * 100);
+  const circ = 2 * Math.round(52 * Math.PI * 100) / 100;
+  const C = 2 * Math.PI * 52;
+  const dash = C * (1 - g.done / TOTAL);
+  const n = nextLesson();
+  const perWeekWidth = g.perWeek ? Math.min(100, Math.round(g.wDone / g.perWeek * 100)) : 100;
+  let cells = "";
+  for (let i = 1; i <= TOTAL; i++){
+    const cls = ["cell"];
+    if (S.done[i]) cls.push("done");
+    if (i === n) cls.push("cur");
+    if (S.secs[i]) cls.push("timed");
+    if (filter === "todo" && S.done[i]) continue;
+    if (filter === "done" && !S.done[i]) continue;
+    cells += '<button class="' + cls.join(" ") + '" onclick="go(\'#/lesson/' + i + '\')">' + i + "</button>";
+  }
+  return `
+  <div class="top">
+    <div>
+      <div class="brand">New Concept English · Book 1</div>
+      <div class="title">新概念英语一 <small>跟课打卡</small></div>
+    </div>
+    <div class="yearchip">目标 ${esc(S.goal.replace(/-/g,"."))} 前学完</div>
+  </div>
+
+  <section class="card hero">
+    <div class="ring">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(29,43,51,.1)" stroke-width="10"/>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="#1b4a86" stroke-width="10"
+          stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${dash}"
+          transform="rotate(-90 60 60)"/>
+      </svg>
+      <div class="pct"><b>${pct}%</b><span>学完 ${g.done}/${TOTAL}</span></div>
+    </div>
+    <div class="heroText">
+      <div class="kpi">
+        <div><b>${g.remaining}</b><span>课还没学</span></div>
+        <div><b>${g.daysLeft}</b><span>天到年底</span></div>
+        <div><b>${g.perWeek}</b><span>每周至少</span></div>
+      </div>
+      <p>本周已学 <b>${g.wDone}</b> 课，按计划本周还要再学 <b>${g.wStill}</b> 课；平均每天约 ${g.perDay} 课。</p>
+      <div class="progress"><i style="width:${pct}%"></i></div>
+      <div style="font-size:11px;color:var(--ink2);margin-top:6px">总进度 ${g.done}/${TOTAL} 课 · 累计学习 ${fmtLong(totalSecs())} · 本周 ${g.wDone}/${g.perWeek} 课</div>
+    </div>
+  </section>
+
+  <div class="row">
+    <button class="btn orange" style="flex:1" onclick="go('#/lesson/${n}')">接着学 · 第 ${n} 课</button>
+    <button class="btn ghost" onclick="go('#/stats')">学习记录</button>
+  </div>
+
+  <div class="secTitle"><h2>课次表</h2><span class="hint">点任意一课开始 · 圆点为已学</span></div>
+  <div class="filters">
+    <button class="chip ${filter==='all'?'on':''}" onclick="setFilter('all')">全部</button>
+    <button class="chip ${filter==='todo'?'on':''}" onclick="setFilter('todo')">未学 ${g.remaining}</button>
+    <button class="chip ${filter==='done'?'on':''}" onclick="setFilter('done')">已学 ${g.done}</button>
+    <button class="chip" onclick="go('#/lesson/' + nextLesson())">跳到下一课</button>
+  </div>
+  <div class="card" style="padding:14px"><div class="grid">${cells}</div></div>
+
+  <div class="secTitle"><h2>设置</h2><span class="hint">本机存储 · 可选 Gist 同步</span></div>
+  <div class="card">
+    <label class="set">年度目标日<input type="date" value="${esc(S.goal)}" onchange="setGoal(this.value)"></label>
+    <label class="set">我的进度（已完成课数）
+      <span class="row" style="gap:8px;align-items:center">
+        <input type="number" min="0" max="144" style="width:78px" value="${doneCount()}" id="progInput">
+        <button class="btn sm" onclick="setProgress()">同步</button>
+      </span>
+    </label>
+    <div class="note-box" style="margin-top:10px">
+      当前默认为「已学完 1–40 课」。以后每学完一课，在课程页点「标记完成」会自动累加；也可在这里直接改成实际进度。
+    </div>
+    <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:12px">
+      <button class="btn ghost sm" onclick="exportProgress()">导出进度 JSON</button>
+      <label class="btn ghost sm" style="display:inline-flex;align-items:center;cursor:pointer;margin:0">
+        导入进度 JSON<input type="file" accept=".json,application/json" onchange="importProgress(this)" style="display:none">
+      </label>
+    </div>
+    <div class="note-box" style="margin-top:8px">保底备份，任何设备任何场景都能用：手机点导出下载 JSON，电脑点导入选这个文件，进度、计时、作业、造句一起搬过去。</div>
+
+    <div style="border-top:1px dashed var(--line);margin:16px 0 12px"></div>
+    <div class="secTitle" style="margin:0 0 8px"><h2>GitHub Gist 同步</h2><span class="hint">${esc(gistStatus())}</span></div>
+    <label class="set">GitHub Token（只需 gist 权限）
+      <input type="password" id="gistToken" placeholder="ghp_… 或 github_pat_…" value="${esc(gistCfg().token)}" onchange="setGistToken(this.value)">
+    </label>
+    <label class="set">Gist ID
+      <input type="text" id="gistId" placeholder="留空点「新建 Gist」自动生成" value="${esc(gistCfg().id)}" onchange="setGistId(this.value)">
+    </label>
+    <div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn sm" onclick="gistSync('auto')">一键同步</button>
+      <button class="btn ghost sm" onclick="gistSync('push')">只上传</button>
+      <button class="btn ghost sm" onclick="gistSync('pull')">只拉取</button>
+      <button class="btn ghost sm" onclick="gistCreate()">新建 Gist</button>
+    </div>
+    <div class="note-box" style="margin-top:8px">
+      Token 只保存在这台设备，不会写进导出的 JSON。云端是 secret gist，别人看不到。同步规则：比较修改时间，新的一方覆盖旧的一方；拉取覆盖前会先在本机留一份备份。
+    </div>
+
+    <div style="margin-top:14px"><button class="btn ghost sm" onclick="resetAll()">清空所有记录</button></div>
+  </div>`;
+}
+
+function setFilter(f){ filter = f; render(); }
+
+function viewLesson(n){
+  const L = LESSONS[n-1];
+  const g = goalInfo();
+  const done = !!S.done[n];
+  if (!T.on) T.cat = S.lastCat || "video";   // 没在计时时，环节选择跟随上次
+  const parts = L.parts.map(p => `
+    <a class="part" href="https://www.bilibili.com/video/${BV}?p=${p.p}" target="_blank" rel="noopener">
+      <span class="pi">▶</span><b>${esc(p.t)}</b><span class="pd">${esc(p.d)}</span>
+    </a>`).join("");
+  const words = L.words.length ? L.words.map(w => `
+    <div class="w"><b>${esc(w.w)}</b><span class="ipa">${esc(w.ipa)}</span><span class="note">${esc(w.note)}</span></div>`).join("")
+    : `<div class="empty">本课是练习课，讲义里没有新单词，重点在视频里的口头替换练习 + 绿皮书第 ${n} 课习题。</div>`;
+  const ex = L.examples.length ? L.examples.map((e,i) => `<div class="ex"><i>${String(i+1).padStart(2,"0")}</i>${esc(e)}</div>`).join("")
+    : `<div class="empty">讲义这一课没有单独的例句卡，去视频里跟读句子。</div>`;
+  const kindDesc = {wb:"先自己写，再对照答案", read:"打开朗读页，跟读到能背",
+                    explain:"Learning Pyramid：讲出来才算学会", make:"写在这一页下面",
+                    extra:"讲义额外任务"};
+  const tasks = L.hw.map((h,i) => ({ id:"h"+i, k:h.k, t:h.t, word:h.word, cnt:h.n, link:h.k==='read'?RECITE_URL:"" }));
+  const taskHTML = tasks.map(t => {
+    const on = S.tasks[n] && S.tasks[n][t.id];
+    const desc = t.k==='make' ? (t.cnt ? "目标 "+t.cnt+" 句" : "句数不限") : kindDesc[t.k];
+    return `<div class="hwItem ${on?'on':''}" data-tid="${n}-${t.id}" onclick="toggleTask(${n},'${t.id}')">
+      <span class="box">✓</span>
+      <div class="hwText">${esc(t.t)}<em>${esc(desc||"")}</em>
+      ${t.link?`<a class="linkline" href="${t.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">nce.ichochy.com 朗读页 ↗</a>`:""}
+      </div></div>`;
+  }).join("");
+  const makeHTML = tasks.filter(t => t.k === 'make').map(t => {
+    const key = n + "_" + t.id;
+    const txt = (S.make && S.make[key]) || "";
+    const cnt = countSentences(txt);
+    return `<div class="mk">
+      <div class="mkTop"><b>用「${esc(t.word)}」造句</b><span class="mkNum" id="mkn-${key}">${cnt}${t.cnt ? " / " + t.cnt : ""} 句</span></div>
+      <div class="mkHint">讲义原文：${esc(t.t)}</div>
+      <textarea id="mk-${key}" placeholder="一行一句，或写完用句号隔开；写多少算多少，自动保存" oninput="onMakeInput(${n},'${t.id}',this.value)">${esc(txt)}</textarea>
+      <div class="mkFoot"><span class="mkTip" id="mkt-${key}">${t.cnt ? (cnt>=t.cnt ? "已达标，作业已自动勾选" : "还差 " + (t.cnt-cnt) + " 句") : "自动保存"}</span>
+      <button class="btn ghost sm" onclick="clearMake(${n},'${t.id}')">清空</button></div>
+    </div>`;
+  }).join("");
+  return `
+  <div class="lessonHead">
+    <button class="back" onclick="go('#/home')">← 课程表</button>
+    <div>
+      <div class="ln">Lesson ${n}</div>
+      <div class="ls">${L.parts.length? esc(L.parts.map(p=>p.t).join(" / ")) : "官方讲义第 "+L.page+" 页"}</div>
+    </div>
+    <div class="spacer"></div>
+    ${done?'<span class="pill ok">已完成</span>':'<span class="pill">未完成</span>'}
+  </div>
+  <div class="goalstrip">全书还剩 <b>${g.remaining}</b> 课 · 本周还差 <b>${g.wStill}</b> 课 · 到年底每天约 <b>${g.perDay}</b> 课（剩 ${g.daysLeft} 天）</div>
+
+  <section class="card">
+    <div class="secTitle" style="margin:0 0 4px"><h2>跟课视频</h2><span class="hint">B站 · 胶学 · 点一次直达</span></div>
+    <div class="parts">${parts || '<div class="empty">这一课没有单独分P。</div>'}</div>
+  </section>
+
+  <section class="card timerCard">
+    <div class="tl">本课学习计时</div>
+    <div id="timer">${fmt(T.on && T.n===n ? elapsed() : (S.secs[n]||0))}</div>
+    <div class="tmeta" id="metaTime">${metaTimeHTML(n)}</div>
+    <div class="tbtns">
+      <button class="btn" id="btnTimer" onclick="toggleTimer(${n})">${T.on && T.n===n ? "暂停计时" : "开始计时"}</button>
+      <button class="btn ghost" onclick="resetTimer(${n})">清零</button>
+    </div>
+    <div class="cats">${CATS.filter(c=>c.k!=="none").map(c=>`<div class="cat ${T.cat===c.k?"on":""}" onclick="setCat('${c.k}')"><i style="background:${c.c}"></i>${c.t}</div>`).join("")}</div>
+    <div class="catHint">先点一下你现在在做哪一步，时间分别记到对应环节；切换或暂停都不会丢。</div>
+    ${segLine(n) ? `<div class="segline" id="segline">${segLine(n)}</div>` : ""}
+  </section>
+
+  <section class="card">
+    <div class="secTitle" style="margin:0 0 4px"><h2>课后作业</h2><span class="hint">按讲义逐条列出</span></div>
+    ${taskHTML}
+  </section>
+
+  ${makeHTML ? `<section class="card">
+    <div class="secTitle" style="margin:0 0 6px"><h2>造句练习</h2><span class="hint">自己写，不用抄讲义</span></div>
+    ${makeHTML}
+  </section>` : ""}
+
+  <section class="card">
+    <div class="secTitle" style="margin:0 0 8px"><h2>本课单词</h2><span class="hint">讲义 Words 部分</span></div>
+    <div class="wlist">${words}</div>
+  </section>
+
+  <section class="card">
+    <div class="secTitle" style="margin:0 0 4px"><h2>例句 / 替换练习</h2><span class="hint">讲义 Grammar · Practices</span></div>
+    ${ex}
+  </section>
+
+  <section class="card ref">
+    <p>官方讲义：课堂笔记&amp;课后练习 · 第 ${L.page||"?"} 页（共 357 页）</p>
+    <a class="btn ghost sm" href="./讲义.pdf#page=${L.page||1}" target="_blank" rel="noopener">打开讲义 PDF</a>
+  </section>
+
+  <div class="footnav">
+    <button class="btn ghost" onclick="go('#/lesson/${Math.max(1,n-1)}')">上一课</button>
+    <button class="btn ${done?'ghost':'orange'}" style="flex:1" onclick="markDone(${n})">${done?"取消完成":"标记本课完成"}</button>
+    <button class="btn ghost" onclick="go('#/lesson/${Math.min(TOTAL,n+1)}')">下一课</button>
+  </div>`;
+}
+
+function viewStats(){
+  const g = goalInfo();
+  const tot = totalSecs();
+  const timedN = LESSONS.filter(l => (S.secs[l.n] || 0) > 0).length;
+  const avg = timedN ? Math.round(tot / timedN) : 0;
+  const days = [];
+  for (let i = 6; i >= 0; i--){ const d = new Date(); d.setDate(d.getDate()-i); days.push({k:dayKey(d), label:["日","一","二","三","四","五","六"][d.getDay()]}); }
+  const max = Math.max(60, ...days.map(d => S.days[d.k]||0));
+  const anyTime = days.some(d => S.days[d.k]);
+  const bars = days.map(d => { const v = S.days[d.k]||0;
+    return `<div><i style="height:${Math.round(v/max*76)+3}px"></i><span>${d.label}</span><em>${v?Math.round(v/60):""}</em></div>`; }).join("");
+  let list = "";
+  const top = LESSONS.filter(l => S.secs[l.n]).sort((a,b)=>S.secs[b.n]-S.secs[a.n]).slice(0,5);
+  if (top.length) list = top.map(l => `<div class="w"><b>第 ${l.n} 课</b><span class="ipa"></span><span class="note">${fmtLong(S.secs[l.n])}</span></div>`).join("");
+  const studyDays = Object.keys(S.days || {}).filter(k => (S.days[k]||0) > 0).length;
+  return `
+  <div class="lessonHead">
+    <button class="back" onclick="go('#/home')">← 课程表</button>
+    <div><div class="ln">学习记录</div><div class="ls">累计投入 · 环节分布 · 近 7 天节奏</div></div>
+  </div>
+  <section class="card">
+    <div class="statsRow">
+      <div><b>${fmtLong(tot)}</b><span>累计学习时长</span></div>
+      <div><b>${g.done}</b><span>已完成课数</span></div>
+      <div><b>${fmtLong(avg)}</b><span>平均每节（有计时）</span></div>
+      <div><b>${studyDays}</b><span>有计时的天数</span></div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="secTitle" style="margin:0 0 2px"><h2>时间花在哪了</h2><span class="hint">按学习环节拆分</span></div>
+    ${pieHTML()}
+  </section>
+  <section class="card">
+    <div class="secTitle" style="margin:0 0 2px"><h2>近 7 天</h2><span class="hint">单位：分钟</span></div>
+    <div class="bar">${bars}</div>
+    <div class="note-box" style="margin-top:6px">${anyTime ? "今天学了 <b>" + fmtLong(S.days[dayKey()]||0) + "</b>，已学 " + dayDone() + " 课。" : "还没有计时记录 —— 在课程页点「开始计时」，每天的学习柱条就会出现在这里。"}</div>
+  </section>
+  <section class="card">
+    <div class="secTitle" style="margin:0 0 2px"><h2>花时间最多的课</h2><span class="hint">Top 5</span></div>
+    ${list || '<div class="empty">还没有计时记录，去课程页点「开始计时」。</div>'}
+  </section>`;
+}
+
+/* ---------- 操作 ---------- */
+function toggleTask(n, id){
+  S.tasks[n] = S.tasks[n] || {};
+  if (S.tasks[n][id]) delete S.tasks[n][id]; else S.tasks[n][id] = dayKey();
+  save(); render();
+}
+function countSentences(t){
+  if (!t) return 0;
+  return t.split(/[.!?\n]+/).map(s => s.trim())
+          .filter(s => s.replace(/[^A-Za-z]/g, "").length >= 2).length;
+}
+function onMakeInput(n, id, val){
+  S.make = S.make || {};
+  const key = n + "_" + id;
+  S.make[key] = val;
+  const cnt = countSentences(val);
+  const task = (LESSONS[n-1].hw || [])[+id.slice(1)] || {};
+  const target = task.n || 0;
+  const numEl = document.getElementById("mkn-" + key);
+  if (numEl) numEl.textContent = cnt + (target ? " / " + target : "") + " 句";
+  const tip = document.getElementById("mkt-" + key);
+  if (tip){
+    const ok = target > 0 && cnt >= target;
+    tip.classList.toggle("ok", ok);
+    tip.textContent = target > 0 ? (ok ? "已达标，作业已自动勾选" : "还差 " + (target - cnt) + " 句") : "自动保存";
+  }
+  if (target > 0 && cnt >= target){
+    S.tasks[n] = S.tasks[n] || {};
+    if (!S.tasks[n][id]){
+      S.tasks[n][id] = dayKey();
+      const el = document.querySelector('[data-tid="' + n + "-" + id + '"]');
+      if (el) el.classList.add("on");
+      toast("造句达标，作业已勾选");
+    }
+  }
+  save();
+}
+function clearMake(n, id){
+  if (!confirm("清空这一课的造句内容？")) return;
+  S.make = S.make || {};
+  delete S.make[n + "_" + id];
+  if (S.tasks[n]) delete S.tasks[n][id];
+  save(); render();
+}
+function markDone(n){
+  if (S.done[n]){ delete S.done[n]; delete S.marks[n]; toast("已取消第 " + n + " 课的完成标记"); }
+  else { S.done[n] = 1; S.marks[n] = dayKey(); toast("第 " + n + " 课完成，继续保持"); }
+  save(); render();
+}
+function resetTimer(n){
+  if (!confirm("清零第 " + n + " 课的计时记录？累计时长和环节分布会一并扣除。")) return;
+  if (T.on && T.n === n) pauseTimer(true);
+  S.secs[n] = 0;
+  if (S.seg) delete S.seg[n];
+  save(); render();
+}
+function setGoal(v){ if (!v) return; S.goal = v; save(); render(); toast("目标日已更新"); }
+function setProgress(){
+  const v = Math.min(144, Math.max(0, parseInt($("progInput").value||"0",10)));
+  if (!confirm("把已完成进度设为前 " + v + " 课？之后课次的完成状态会被清掉。")) return;
+  S.done = {}; S.marks = {};
+  for (let i = 1; i <= v; i++) S.done[i] = 1;
+  S.start = v; save(); render(); toast("进度已同步为 " + v + " 课");
+}
+function resetAll(){
+  if (!confirm("清空全部记录（进度、计时、作业勾选）？不可恢复。")) return;
+  localStorage.removeItem(KEY); S = defaultState(); save(); render(); toast("已重置");
+}
+/* 导出 / 导入：保底备份，任何设备任何场景都能用 */
+function exportProgress(){
+  const blob = new Blob([JSON.stringify(S, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  const d = new Date(), p = n => String(n).padStart(2,"0");
+  a.href = URL.createObjectURL(blob);
+  a.download = "新概念一进度_" + d.getFullYear() + p(d.getMonth()+1) + p(d.getDate()) + ".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1500);
+  toast("已导出进度文件");
+}
+function normalizeState(o){
+  const seg = {};
+  if (o.seg && typeof o.seg === "object"){
+    for (const n in o.seg){
+      if (typeof o.seg[n] !== "object") continue;
+      seg[n] = {};
+      for (const k in o.seg[n]){ const v = +o.seg[n][k]; if (v > 0) seg[n][k] = v; }
+    }
+  }
+  return Object.assign(defaultState(), {
+    done: o.done || {}, marks: o.marks || {}, secs: o.secs || {}, days: o.days || {},
+    seg: seg, lastCat: CATS.some(c => c.k === o.lastCat) ? o.lastCat : "video",
+    tasks: o.tasks || {}, make: o.make || {}, lastN: o.lastN || 41,
+    goal: o.goal || thisYearEnd(), start: (typeof o.start === "number" ? o.start : 0),
+    updatedAt: o.updatedAt || ""
+  });
+}
+function importProgress(inp){
+  const f = inp.files && inp.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    let o = null;
+    try { o = JSON.parse(r.result); } catch(e) { o = null; }
+    if (o && o.state && typeof o.state === "object") o = o.state;
+    if (!o || typeof o !== "object" || !o.done || typeof o.done !== "object"){
+      toast("这个文件不是导出的进度"); inp.value = ""; return;
+    }
+    if (!confirm("用这份进度覆盖当前记录？当前记录会被替换。")) { inp.value = ""; return; }
+    localStorage.setItem(GIST_BACKUP_KEY, JSON.stringify(S));
+    S = normalizeState(o);
+    save(); render(); toast("进度已导入");
+    inp.value = "";
+  };
+  r.readAsText(f);
+}
+
+/* ---------- GitHub Gist 同步 ---------- */
+function gistCfg(){
+  try { return {token: localStorage.getItem(GIST_TOKEN_KEY) || "", id: localStorage.getItem(GIST_ID_KEY) || ""}; }
+  catch(e){ return {token:"", id:""}; }
+}
+function gistStatus(){
+  const c = gistCfg();
+  if (!c.token) return "未配置 Token";
+  if (!c.id) return "有 Token · 还没建 Gist";
+  let last = "";
+  try { last = localStorage.getItem(GIST_LAST_KEY) || ""; } catch(e){}
+  return "已连接" + (last ? " · 上次同步 " + last : "");
+}
+function setGistToken(v){
+  try { v ? localStorage.setItem(GIST_TOKEN_KEY, v.trim()) : localStorage.removeItem(GIST_TOKEN_KEY); } catch(e){}
+  toast(v ? "Token 已保存在本机" : "Token 已清除"); render();
+}
+function setGistId(v){
+  try { v.trim() ? localStorage.setItem(GIST_ID_KEY, v.trim()) : localStorage.removeItem(GIST_ID_KEY); } catch(e){}
+  toast("Gist ID 已保存"); render();
+}
+async function ghFetch(path, opt){
+  const c = gistCfg();
+  if (!c.token) throw new Error("先填 GitHub Token");
+  const res = await fetch("https://api.github.com" + path, Object.assign({}, opt, {headers:{
+    "Authorization": "Bearer " + c.token,
+    "Accept": "application/vnd.github+json",
+    "Content-Type": "application/json"
+  }}));
+  if (!res.ok){
+    let msg = "";
+    try { msg = (await res.json()).message || ""; } catch(e){}
+    throw new Error("GitHub " + res.status + (msg ? "：" + msg : ""));
+  }
+  return res.json();
+}
+function gistPayload(){
+  return JSON.stringify({app:"nce1", version:1, updatedAt:S.updatedAt || "", state:S}, null, 2);
+}
+async function gistCreate(){
+  const c = gistCfg();
+  if (!c.token) return toast("先在设置里填 GitHub Token");
+  try {
+    const d = await ghFetch("/gists", {method:"POST", body: JSON.stringify({
+      description: "新概念英语一 · 跟课打卡进度",
+      public: false,
+      files: {[GIST_FILE]: {content: gistPayload()}}
+    })});
+    localStorage.setItem(GIST_ID_KEY, d.id);
+    localStorage.setItem(GIST_LAST_KEY, new Date().toLocaleString("zh-CN", {hour12:false}));
+    toast("Gist 已创建，ID 已填入");
+    render();
+  } catch(e){ toast("创建失败：" + e.message); }
+}
+async function gistPush(){
+  const c = gistCfg();
+  if (!c.token) throw new Error("先填 GitHub Token");
+  if (!c.id){ await gistCreate(); return; }
+  await ghFetch("/gists/" + c.id, {method:"PATCH", body: JSON.stringify({
+    files: {[GIST_FILE]: {content: gistPayload()}}
+  })});
+  localStorage.setItem(GIST_LAST_KEY, new Date().toLocaleString("zh-CN", {hour12:false}));
+}
+async function gistPull(){
+  const c = gistCfg();
+  if (!c.id) throw new Error("还没有 Gist ID");
+  const d = await ghFetch("/gists/" + c.id);
+  const f = d.files && d.files[GIST_FILE];
+  if (!f) throw new Error("云端还没有进度文件");
+  let txt = f.content;
+  if (f.truncated && f.raw_url) txt = await (await fetch(f.raw_url)).text();
+  const o = JSON.parse(txt);
+  const st = o.state || o;
+  if (!st || !st.done) throw new Error("云端文件格式不对");
+  localStorage.setItem(GIST_BACKUP_KEY, JSON.stringify(S));
+  S = normalizeState(st);
+  save();
+  localStorage.setItem(GIST_LAST_KEY, new Date().toLocaleString("zh-CN", {hour12:false}));
+  render();
+}
+async function gistSync(mode){
+  const c = gistCfg();
+  if (!c.token) return toast("先在设置里填 GitHub Token");
+  try {
+    if (!c.id){
+      if (mode === "pull") return toast("还没有 Gist ID，先新建或粘贴");
+      await gistCreate();
+      return;
+    }
+    const d = await ghFetch("/gists/" + c.id);
+    const f = d.files && d.files[GIST_FILE];
+    let remote = null;
+    if (f){
+      let txt = f.content;
+      if (f.truncated && f.raw_url) txt = await (await fetch(f.raw_url)).text();
+      remote = JSON.parse(txt);
+    }
+    const remoteTime = (remote && remote.updatedAt) || "";
+    const localTime = S.updatedAt || "";
+    let dir = mode;
+    if (mode === "auto"){
+      dir = (remoteTime && (!localTime || remoteTime > localTime)) ? "pull" : "push";
+    }
+    if (dir === "pull"){
+      if (!remote) return toast("云端还没有进度，先点「只上传」");
+      if (!confirm("云端进度比本机新，用云端覆盖本机？本机会先留一份备份。")) return;
+      const st = remote.state || remote;
+      localStorage.setItem(GIST_BACKUP_KEY, JSON.stringify(S));
+      S = normalizeState(st); save(); render(); toast("已拉取云端进度");
+    } else {
+      await gistPush();
+      toast("已上传到云端");
+    }
+    render();
+  } catch(e){ toast("同步失败：" + e.message); }
+}
+window.addEventListener("hashchange", render);
+/* ---------- PWA ---------- */
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  navigator.serviceWorker.register("./sw.js").catch(()=>{});
+}
+restoreRun();
+render();
+</script>
+</body>
+</html>
+
+
